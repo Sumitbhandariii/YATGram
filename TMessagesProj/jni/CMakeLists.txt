@@ -217,7 +217,7 @@ add_library(tgnet STATIC
         tgnet/Handshake.cpp
         tgnet/Config.cpp)
 target_compile_options(tgnet PUBLIC
-        -Wall -frtti -finline-functions -ffast-math -Os)
+        -Wall -frtti -finline-functions -ffast-math -Oz)
 set_target_properties(tgnet PROPERTIES
         ANDROID_ARM_MODE arm)
 target_compile_definitions(tgnet PUBLIC
@@ -261,7 +261,7 @@ add_library(rlottie STATIC
         rlottie/src/vector/vrect.cpp
         rlottie/src/vector/vrle.cpp)
 target_compile_options(rlottie PUBLIC
-        -Wall -fno-rtti -finline-functions -ffast-math -Os -fno-unwind-tables -fno-asynchronous-unwind-tables -Wnon-virtual-dtor -Woverloaded-virtual -Wno-unused-parameter -fvisibility=hidden)
+        -Wall -fno-rtti -finline-functions -ffast-math -Oz -fno-unwind-tables -fno-asynchronous-unwind-tables -Wnon-virtual-dtor -Woverloaded-virtual -Wno-unused-parameter -fvisibility=hidden)
 set_target_properties(rlottie PROPERTIES
         ANDROID_ARM_MODE arm)
 target_compile_definitions(rlottie PUBLIC
@@ -332,7 +332,7 @@ target_include_directories(flac PUBLIC
 add_library(sqlite STATIC
         sqlite/sqlite3.c)
 target_compile_options(sqlite PUBLIC
-        -fno-strict-aliasing -Os)
+        -fno-strict-aliasing -Oz)
 set_target_properties(sqlite PROPERTIES
         ANDROID_ARM_MODE arm)
 target_compile_definitions(sqlite PUBLIC
@@ -399,7 +399,7 @@ add_library(${NATIVE_LIB} SHARED
 )
 
 target_compile_options(${NATIVE_LIB} PUBLIC
-        -ffast-math -Os -funroll-loops -ffast-math -fno-strict-aliasing -fno-math-errno)
+        -ffast-math -Oz -funroll-loops -ffast-math -fno-strict-aliasing -fno-math-errno)
 
 target_compile_definitions(${NATIVE_LIB} PUBLIC
         BSD=1 NULL=0 SOCKLEN_T=socklen_t ANDROID_NDK DISABLE_IMPORTGL AVOID_TABLES ANDROID_TILE_BASED_DECODE __STDC_CONSTANT_MACROS ANDROID_ARMV6_IDCT OPUS_BUILD FIXED_POINT USE_ALLOCA restrict= __EMX__ LOCALE_NOT_USED HAVE_LRINT HAVE_LRINTF)

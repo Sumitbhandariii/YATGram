@@ -182,7 +182,7 @@ function build {
 				CLANG_PREFIX=armv7a
 				BIN_MIDDLE=androideabi
 				CPU=armeabi-v7a
-				OPTIMIZE_CFLAGS="-Os -march=armv7-a -mfloat-abi=softfp -mfpu=neon -mtune=cortex-a8 -mthumb -D__thumb__"
+				OPTIMIZE_CFLAGS="-Oz -march=armv7-a -mfloat-abi=softfp -mfpu=neon -mtune=cortex-a8 -mthumb -D__thumb__"
 				TARGET="armv7-android-gcc --enable-neon --disable-neon-asm"
 				PREFIX=./build/$CPU
 				CPU_DETECT="--disable-runtime-cpu-detect"
