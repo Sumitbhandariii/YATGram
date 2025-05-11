@@ -66,7 +66,7 @@ def isWindows = String.valueOf(DefaultNativePlatform.currentOperatingSystem.toFa
 android {
     compileSdkVersion 34
     buildToolsVersion '35.0.0'
-    ndkVersion = "24.0.8215888"
+    ndkVersion = "25.2.9519653"
 
     sourceSets.main.jniLibs.srcDirs = ['./jni/']
 
