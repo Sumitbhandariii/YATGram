@@ -528,13 +528,18 @@ public class FragmentedMp4Extractor implements Extractor {
       for (int i = 0; i < trackCount; i++) {
         TrackSampleTable sampleTable = sampleTables.get(i);
         Track track = sampleTable.track;
-        TrackBundle trackBundle =
-            new TrackBundle(
-                extractorOutput.track(i, track.type),
-                sampleTable,
-                getDefaultSampleValues(defaultSampleValuesArray, track.id));
-        trackBundles.put(track.id, trackBundle);
-        durationUs = max(durationUs, track.durationUs);
+        DefaultSampleValues objDSV = getDefaultSampleValues(defaultSampleValuesArray, track.id);
+        if (objDSV != null) {
+            TrackBundle trackBundle =
+                new TrackBundle(
+                    extractorOutput.track(i, track.type),
+                    sampleTable,
+                    objDSV);
+            trackBundles.put(track.id, trackBundle);
+            durationUs = max(durationUs, track.durationUs);
+        } else {
+            Log.w(TAG, "Ignored track " + track.id + " getDefaultSampleValues return null");
+        }
       }
       extractorOutput.endTracks();
     } else {
@@ -542,9 +547,14 @@ public class FragmentedMp4Extractor implements Extractor {
       for (int i = 0; i < trackCount; i++) {
         TrackSampleTable sampleTable = sampleTables.get(i);
         Track track = sampleTable.track;
-        trackBundles
-            .get(track.id)
-            .reset(sampleTable, getDefaultSampleValues(defaultSampleValuesArray, track.id));
+        DefaultSampleValues objDSV = getDefaultSampleValues(defaultSampleValuesArray, track.id);
+        if (objDSV != null) {
+            trackBundles
+                .get(track.id)
+                .reset(sampleTable, objDSV);
+        } else {
+            Log.w(TAG, "Ignored track " + track.id + " getDefaultSampleValues return null");
+        }
       }
     }
   }
@@ -561,7 +571,7 @@ public class FragmentedMp4Extractor implements Extractor {
       // See https://github.com/google/ExoPlayer/issues/4477.
       return defaultSampleValuesArray.valueAt(/* index= */ 0);
     }
-    return checkNotNull(defaultSampleValuesArray.get(trackId));
+    return defaultSampleValuesArray.get(trackId);
   }
 
   private void onMoofContainerAtomRead(ContainerAtom moof) throws ParserException {
