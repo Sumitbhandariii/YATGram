@@ -1138,7 +1138,6 @@
     <string name="RemindDayYearAt">yyyy\'년\' M\'월\' d\'일\' HH:mm\'에 알림\'</string>
     <string name="BotsMenuTitle">메뉴</string>
     <!--FORK CLIENT-->
-    <string name="BottomDialogs">여기를 탭하여 새 채팅을 시작하세요.</string>
     <string name="FastForward">빠른 전달</string>
     <string name="ForwardAsAlbum">앨범으로 전달하기</string>
     <string name="DateForward">날짜</string>

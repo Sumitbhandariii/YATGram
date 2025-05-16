@@ -1317,7 +1317,6 @@
     <string name="RemindDayYearAt">\'Recordar el\' d \'de\' MMM \'de\' yyyy \'a las\' HH:mm</string>
     <string name="BotsMenuTitle">Menu</string>
     <!--FORK CLIENT-->
-    <string name="BottomDialogs">Toca aquí para iniciar un nuevo chat.</string>
     <string name="FastForward">Reenviar Rápido</string>
     <string name="ForwardAsAlbum">Reenviar como álbum</string>
     <string name="DateForward">Fecha</string>

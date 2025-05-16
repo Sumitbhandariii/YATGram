@@ -1539,7 +1539,6 @@
     <string name="RemindDayYearAt">\'Ricorda il\' d MMM yyyy \'alle\' HH:mm</string>
     <string name="BotsMenuTitle">Menu</string>
     <!--FORK CLIENT-->
-    <string name="BottomDialogs">Tocca qui per avviare una nuova chat.</string>
     <string name="FastForward">Inoltra Veloce</string>
     <string name="ForwardAsAlbum">Inoltra come album</string>
     <string name="DateForward">Data</string>

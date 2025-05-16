@@ -277,7 +277,6 @@
     <string name="RemindDayAt">\'Нагадати\' d MMM\',\' HH:mm</string>
     <string name="RemindDayYearAt">\'Нагадати\' d MMM yyyy\',\' HH:mm</string>
     <!--FORK CLIENT-->
-    <string name="BottomDialogs">Торкніться тут, щоб розпочати новий чат.</string>
     <string name="FastForward">Швидко Переслати</string>
     <string name="ForwardAsAlbum">Переслати як альбом</string>
     <string name="DateForward">Дата</string>

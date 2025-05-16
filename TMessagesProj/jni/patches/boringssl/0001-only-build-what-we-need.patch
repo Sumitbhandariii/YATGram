@@ -1,174 +1,5 @@
-diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 82b19fc8b..17d896ce4 100644
---- a/CMakeLists.txt
-+++ b/CMakeLists.txt
-@@ -476,34 +476,6 @@ if(USE_CUSTOM_LIBCXX)
-   target_link_libraries(libcxx libcxxabi)
- endif()
- 
--# Add minimal googletest targets. The provided one has many side-effects, and
--# googletest has a very straightforward build.
--add_library(
--  boringssl_gtest
--  third_party/googletest/googlemock/src/gmock-all.cc
--  third_party/googletest/googletest/src/gtest-all.cc
--)
--if(USE_CUSTOM_LIBCXX)
--  target_link_libraries(boringssl_gtest libcxx)
--endif()
--target_include_directories(
--    boringssl_gtest
--    PUBLIC
--    third_party/googletest/googlemock/include
--    third_party/googletest/googletest/include
--    PRIVATE
--    third_party/googletest/googlemock
--    third_party/googletest/googletest
--)
--
--# Declare a dummy target to build all unit tests. Test targets should inject
--# themselves as dependencies next to the target definition.
--add_custom_target(all_tests)
--
--add_subdirectory(ssl/test)
--add_subdirectory(util/fipstools)
--add_subdirectory(util/fipstools/acvp/modulewrapper)
--
- if(OPENSSL_ASM)
-   set(CRYPTO_SOURCES_ASM_USED ${CRYPTO_SOURCES_ASM})
-   set(BCM_SOURCES_ASM_USED ${BCM_SOURCES_ASM})
-@@ -655,67 +627,6 @@ add_library(ssl ${SSL_SOURCES})
- set_property(TARGET ssl PROPERTY EXPORT_NAME SSL)
- target_link_libraries(ssl crypto)
- 
--add_library(decrepit ${DECREPIT_SOURCES})
--target_link_libraries(decrepit ssl crypto)
--
--add_library(test_support_lib STATIC
--            ${TEST_SUPPORT_SOURCES} ${TEST_SUPPORT_SOURCES_ASM_USED})
--if(LIBUNWIND_FOUND)
--  target_compile_options(test_support_lib PRIVATE ${LIBUNWIND_CFLAGS_OTHER})
--  target_include_directories(test_support_lib PRIVATE ${LIBUNWIND_INCLUDE_DIRS})
--  target_link_libraries(test_support_lib ${LIBUNWIND_LDFLAGS})
--endif()
--if(WIN32)
--  target_link_libraries(test_support_lib dbghelp)
--endif()
--target_link_libraries(test_support_lib boringssl_gtest crypto)
--
--# urandom_test is a separate binary because it needs to be able to observe the
--# PRNG initialisation, which means that it can't have other tests running before
--# it does.
--add_executable(urandom_test ${URANDOM_TEST_SOURCES})
--target_link_libraries(urandom_test test_support_lib boringssl_gtest crypto)
--add_dependencies(all_tests urandom_test)
--
--add_executable(crypto_test ${CRYPTO_TEST_SOURCES})
--target_link_libraries(crypto_test test_support_lib boringssl_gtest crypto)
--add_dependencies(all_tests crypto_test)
--
--add_executable(ssl_test ${SSL_TEST_SOURCES})
--target_link_libraries(ssl_test test_support_lib boringssl_gtest ssl crypto)
--add_dependencies(all_tests ssl_test)
--add_executable(decrepit_test ${DECREPIT_TEST_SOURCES})
--target_link_libraries(decrepit_test test_support_lib boringssl_gtest
--                      decrepit ssl crypto)
--add_dependencies(all_tests decrepit_test)
--
--if(APPLE)
--  set(PKI_CXX_FLAGS "-fno-aligned-new")
--endif()
--
--add_library(pki ${PKI_SOURCES})
--target_link_libraries(pki crypto)
--
--add_executable(pki_test ${PKI_TEST_SOURCES})
--target_link_libraries(pki_test test_support_lib boringssl_gtest pki crypto)
--add_dependencies(all_tests pki_test)
--
--set_target_properties(
--  pki pki_test
--  PROPERTIES
--  COMPILE_FLAGS "${PKI_CXX_FLAGS}")
--
--add_executable(bssl ${BSSL_SOURCES})
--target_link_libraries(bssl ssl crypto)
--
--# Historically, targets were built in subdirectories. For compatibility with
--# existing tools, we, for now, copy the targets into the subdirectories. This
--# will be removed sometime in 2024.
--copy_post_build(crypto crypto crypto_test urandom_test)
--copy_post_build(ssl ssl ssl_test)
--copy_post_build(decrepit decrepit decrepit_test)
--copy_post_build(tool bssl)
--
- if(FUZZ)
-   if(LIBFUZZER_FROM_DEPS)
-     file(GLOB LIBFUZZER_SOURCES "util/bot/libFuzzer/*.cpp")
-@@ -744,61 +655,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-   set(HANDSHAKER_ARGS "-handshaker-path" $<TARGET_FILE:handshaker>)
- endif()
- 
--if(FIPS)
--  add_custom_target(
--    acvp_tests
--    COMMAND ${GO_EXECUTABLE} build -o ${CMAKE_CURRENT_BINARY_DIR}/acvptool
--            boringssl.googlesource.com/boringssl.git/util/fipstools/acvp/acvptool
--    COMMAND ${GO_EXECUTABLE} build -o ${CMAKE_CURRENT_BINARY_DIR}/testmodulewrapper
--            boringssl.googlesource.com/boringssl.git/util/fipstools/acvp/acvptool/testmodulewrapper
--    COMMAND cd util/fipstools/acvp/acvptool/test &&
--            ${GO_EXECUTABLE} run check_expected.go
--            -tool ${CMAKE_CURRENT_BINARY_DIR}/acvptool
--            -module-wrappers modulewrapper:$<TARGET_FILE:modulewrapper>,testmodulewrapper:${CMAKE_CURRENT_BINARY_DIR}/testmodulewrapper
--            -tests tests.json
--    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
--    DEPENDS modulewrapper
--    USES_TERMINAL)
--
--  add_custom_target(
--    fips_specific_tests_if_any
--    DEPENDS acvp_tests
--  )
--else()
--  add_custom_target(fips_specific_tests_if_any)
--endif()
--
--file(STRINGS util/go_tests.txt GO_TESTS)
--set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
--             util/go_tests.txt)
--
--if(GO_EXECUTABLE)
--  add_custom_target(
--      run_tests
--      COMMAND ${CMAKE_COMMAND} -E echo "Running Go tests"
--      COMMAND ${GO_EXECUTABLE} test ${GO_TESTS}
--      COMMAND ${CMAKE_COMMAND} -E echo
--      COMMAND ${CMAKE_COMMAND} -E echo "Running unit tests"
--      COMMAND ${GO_EXECUTABLE} run util/all_tests.go -build-dir
--              ${CMAKE_CURRENT_BINARY_DIR}
--      COMMAND ${CMAKE_COMMAND} -E echo
--      COMMAND ${CMAKE_COMMAND} -E echo "Running SSL tests"
--      COMMAND cd ssl/test/runner &&
--              ${GO_EXECUTABLE} test -shim-path $<TARGET_FILE:bssl_shim>
--                ${HANDSHAKER_ARGS} ${RUNNER_ARGS}
--      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
--      DEPENDS all_tests bssl_shim handshaker fips_specific_tests_if_any
--      USES_TERMINAL)
--else()
--  add_custom_target(
--      run_tests
--      COMMAND ${CMAKE_COMMAND} -E echo "Running tests requires Go"
--      COMMAND ${CMAKE_COMMAND} -E false)
--endif()
--
- if(INSTALL_ENABLED)
-   install(TARGETS crypto ssl EXPORT OpenSSLTargets)
--  install(TARGETS bssl)
-   install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-   install(EXPORT OpenSSLTargets
-           FILE OpenSSLTargets.cmake
 diff --git a/gen/sources.cmake b/gen/sources.cmake
-index 5ae6e0fa1..93f18df79 100644
+index 39cd4e4fe..4fdb817eb 100644
 --- a/gen/sources.cmake
 +++ b/gen/sources.cmake
 @@ -242,35 +242,6 @@ set(
@@ -207,7 +38,7 @@ index 5ae6e0fa1..93f18df79 100644
  set(
    CRYPTO_SOURCES
  
-@@ -723,400 +694,6 @@ set(
+@@ -726,409 +697,6 @@ set(
    gen/crypto/md5-x86_64-win.asm
  )
  
@@ -237,6 +68,7 @@ index 5ae6e0fa1..93f18df79 100644
 -  crypto/digest/digest_test.cc
 -  crypto/dsa/dsa_test.cc
 -  crypto/ecdh/ecdh_test.cc
+-  crypto/ecdsa/ecdsa_p1363_test.cc
 -  crypto/err/err_test.cc
 -  crypto/evp/evp_extra_test.cc
 -  crypto/evp/evp_test.cc
@@ -262,6 +94,7 @@ index 5ae6e0fa1..93f18df79 100644
 -  crypto/kyber/kyber_test.cc
 -  crypto/lhash/lhash_test.cc
 -  crypto/md5/md5_test.cc
+-  crypto/mem_test.cc
 -  crypto/mldsa/mldsa_test.cc
 -  crypto/mlkem/mlkem_test.cc
 -  crypto/obj/obj_test.cc
@@ -284,7 +117,6 @@ index 5ae6e0fa1..93f18df79 100644
 -  crypto/test/gtest_main.cc
 -  crypto/thread_test.cc
 -  crypto/trust_token/trust_token_test.cc
--  crypto/x509/tab_test.cc
 -  crypto/x509/x509_test.cc
 -  crypto/x509/x509_time_test.cc
 -)
@@ -495,13 +327,21 @@ index 5ae6e0fa1..93f18df79 100644
 -  third_party/wycheproof_testvectors/ecdh_secp256r1_test.txt
 -  third_party/wycheproof_testvectors/ecdh_secp384r1_test.txt
 -  third_party/wycheproof_testvectors/ecdh_secp521r1_test.txt
+-  third_party/wycheproof_testvectors/ecdsa_secp224r1_sha224_p1363_test.txt
 -  third_party/wycheproof_testvectors/ecdsa_secp224r1_sha224_test.txt
+-  third_party/wycheproof_testvectors/ecdsa_secp224r1_sha256_p1363_test.txt
 -  third_party/wycheproof_testvectors/ecdsa_secp224r1_sha256_test.txt
+-  third_party/wycheproof_testvectors/ecdsa_secp224r1_sha512_p1363_test.txt
 -  third_party/wycheproof_testvectors/ecdsa_secp224r1_sha512_test.txt
+-  third_party/wycheproof_testvectors/ecdsa_secp256r1_sha256_p1363_test.txt
 -  third_party/wycheproof_testvectors/ecdsa_secp256r1_sha256_test.txt
+-  third_party/wycheproof_testvectors/ecdsa_secp256r1_sha512_p1363_test.txt
 -  third_party/wycheproof_testvectors/ecdsa_secp256r1_sha512_test.txt
+-  third_party/wycheproof_testvectors/ecdsa_secp384r1_sha384_p1363_test.txt
 -  third_party/wycheproof_testvectors/ecdsa_secp384r1_sha384_test.txt
+-  third_party/wycheproof_testvectors/ecdsa_secp384r1_sha512_p1363_test.txt
 -  third_party/wycheproof_testvectors/ecdsa_secp384r1_sha512_test.txt
+-  third_party/wycheproof_testvectors/ecdsa_secp521r1_sha512_p1363_test.txt
 -  third_party/wycheproof_testvectors/ecdsa_secp521r1_sha512_test.txt
 -  third_party/wycheproof_testvectors/eddsa_test.txt
 -  third_party/wycheproof_testvectors/hkdf_sha1_test.txt
@@ -608,8 +448,8 @@ index 5ae6e0fa1..93f18df79 100644
  set(
    FUZZ_SOURCES
  
-@@ -1156,1617 +733,6 @@ set(
-   fuzz/verify_name_match_verifynameinsubtree_fuzzer.cc
+@@ -1181,1617 +749,6 @@ set(
+   util/fipstools/acvp/modulewrapper/modulewrapper.h
  )
  
 -set(
@@ -2226,7 +2066,7 @@ index 5ae6e0fa1..93f18df79 100644
  set(
    SSL_SOURCES
  
-@@ -2825,72 +791,3 @@ set(
+@@ -2850,72 +807,3 @@ set(
  
    ssl/internal.h
  )
@@ -2299,3 +2139,49 @@ index 5ae6e0fa1..93f18df79 100644
 -
 -  crypto/rand/urandom_test.cc
 -)
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index bb01da1af..27a940c72 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -38,7 +38,6 @@ enable_language(CXX)
+ 
+ # TODO(crbug,com/389897612): Register tests with CTest. For now, we include this
+ # only to pick up the standard |BUILD_TESTING| option.
+-include(CTest)
+ include(GNUInstallDirs)
+ 
+ set(INSTALL_ENABLED 1)
+@@ -662,15 +661,9 @@ add_library(ssl ${SSL_SOURCES})
+ set_property(TARGET ssl PROPERTY EXPORT_NAME SSL)
+ target_link_libraries(ssl crypto)
+ 
+-add_library(decrepit ${DECREPIT_SOURCES})
+-target_link_libraries(decrepit ssl crypto)
+-
+ if(APPLE)
+   set(PKI_CXX_FLAGS "-fno-aligned-new")
+ endif()
+-add_library(pki ${PKI_SOURCES})
+-target_link_libraries(pki crypto)
+-target_compile_options(pki PRIVATE ${PKI_CXX_FLAGS})
+ 
+ if(BUILD_TESTING)
+   add_library(test_support_lib STATIC
+@@ -718,9 +711,6 @@ if(FIPS)
+   target_link_libraries(modulewrapper crypto)
+ endif()
+ 
+-add_executable(bssl ${BSSL_SOURCES})
+-target_link_libraries(bssl ssl crypto)
+-
+ if(FUZZ)
+   if(LIBFUZZER_FROM_DEPS)
+     file(GLOB LIBFUZZER_SOURCES "util/bot/libFuzzer/*.cpp")
+@@ -805,7 +795,6 @@ endif()
+ 
+ if(INSTALL_ENABLED)
+   install(TARGETS crypto ssl EXPORT OpenSSLTargets)
+-  install(TARGETS bssl)
+   install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+   install(EXPORT OpenSSLTargets
+           FILE OpenSSLTargets.cmake

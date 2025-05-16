@@ -1086,7 +1086,6 @@
     <string name="RemindDayYearAt">\'Herinner op\' d MMM yyyy \'om\' HH:mm</string>
     <string name="BotsMenuTitle">Menu</string>
     <!--FORK CLIENT-->
-    <string name="BottomDialogs">Tik hier om een nieuwe chat te starten.</string>
     <string name="FastForward">Snel Doorsturen</string>
     <string name="ForwardAsAlbum">Doorsturen als album</string>
     <string name="DateForward">Datum</string>

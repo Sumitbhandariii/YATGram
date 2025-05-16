@@ -169,6 +169,7 @@ public class ForkSettingsActivity extends BaseFragment {
     // YATGram
     private int hideAds;
     private int byPassRestrictedContent;
+    private int hideFloatingButton;
     // end YATGram
 
     private int stickerSizeRow;
@@ -249,6 +250,7 @@ public class ForkSettingsActivity extends BaseFragment {
         emptyRows.add(rowCount++);
         hideAds = rowCount++; // YATGram
         byPassRestrictedContent = rowCount++; // YATGram
+        hideFloatingButton = rowCount++; // YATGram
     
         emptyRows.add(rowCount++);
         sectionRows.add(rowCount++);
@@ -373,6 +375,8 @@ public class ForkSettingsActivity extends BaseFragment {
                 toggleGlobalMainSetting("hideAds", view, true);
             } else if (position == byPassRestrictedContent) {
                 toggleGlobalMainSetting("byPassRestrictedContent", view, false);
+            } else if (position == hideFloatingButton) {
+                toggleGlobalMainSetting("hideFloatingButton", view, true);
             } else if (position == replaceForward) {
                 toggleGlobalMainSetting("replaceForward", view, true);
             } else if (position == mentionByName) {
@@ -537,6 +541,9 @@ public class ForkSettingsActivity extends BaseFragment {
                         String t = LocaleController.getString("byPassRestrictedContent", R.string.byPassRestrictedContent);
                         String info = LocaleController.getString("byPassRestrictedContentInfo", R.string.byPassRestrictedContentInfo);
                         textCell.setTextAndValueAndCheck(t, info, preferences.getBoolean("byPassRestrictedContent", false), true, false);
+                    } else if (position == hideFloatingButton) {
+                        String t = LocaleController.getString("hideFloatingButton", R.string.hideFloatingButton);
+                        textCell.setTextAndCheck(t, preferences.getBoolean("hideFloatingButton", true), false);
                     } else if (position == replaceForward) {
                         String t = LocaleController.getString("ReplaceForward", R.string.ReplaceForward);
                         textCell.setTextAndCheck(t, preferences.getBoolean("replaceForward", true), false);
@@ -608,6 +615,7 @@ public class ForkSettingsActivity extends BaseFragment {
                         || position == lockPremium
                         || position == hideAds
                         || position == byPassRestrictedContent
+                        || position == hideFloatingButton
                         || position == replaceForward
                         || position == mentionByName
                         || position == openArchiveOnPull
@@ -681,6 +689,7 @@ public class ForkSettingsActivity extends BaseFragment {
                 || position == lockPremium
                 || position == hideAds
                 || position == byPassRestrictedContent
+                || position == hideFloatingButton
                 || position == replaceForward
                 || position == mentionByName
                 || position == openArchiveOnPull
