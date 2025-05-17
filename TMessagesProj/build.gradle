@@ -66,7 +66,7 @@ def isWindows = String.valueOf(DefaultNativePlatform.currentOperatingSystem.toFa
 android {
     compileSdkVersion 34
     buildToolsVersion '35.0.0'
-    ndkVersion = "25.2.9519653"
+    ndkVersion = "26.3.11579264"
 
     sourceSets.main.jniLibs.srcDirs = ['./jni/']
 
@@ -96,7 +96,7 @@ android {
     defaultConfig.versionCode = Integer.parseInt(Utils['getVersionCode']())
 
     defaultConfig {
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 34
 
         vectorDrawables.generatedDensities = ['mdpi', 'hdpi', 'xhdpi', 'xxhdpi']
@@ -127,7 +127,7 @@ android {
         externalNativeBuild {
             cmake {
                 version = '3.21.0+'
-                arguments '-DANDROID_STL=c++_static', '-DANDROID_PLATFORM=android-23'
+                arguments '-DANDROID_STL=c++_static', '-DANDROID_PLATFORM=android-24'
             }
         }
     }

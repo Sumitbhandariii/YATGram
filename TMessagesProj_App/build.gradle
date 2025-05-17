@@ -127,7 +127,7 @@ android {
             sourceSets.standalone {
                 manifest.srcFile '../TMessagesProj/config/release/AndroidManifest_standalone.xml'
             }
-            minSdkVersion 23
+            minSdkVersion 24
             ext {
                 abiVersionCode = 9
             }
@@ -170,10 +170,10 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 34
         versionName Utils['getVersionName']()
-        ndkVersion = "25.2.9519653"
+        ndkVersion = "26.3.11579264"
 
         multiDexEnabled = true
 
@@ -182,7 +182,7 @@ android {
         externalNativeBuild {
             cmake {
                 version = '3.21.0+'
-                arguments '-DANDROID_STL=c++_static', '-DANDROID_PLATFORM=android-23'
+                arguments '-DANDROID_STL=c++_static', '-DANDROID_PLATFORM=android-24'
             }
         }
     }

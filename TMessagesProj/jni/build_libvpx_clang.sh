@@ -21,7 +21,7 @@ function build_one {
 	export AS=${CC_PREFIX}clang++
 	export CROSS_PREFIX=${PREBUILT}/bin/${ARCH_NAME}-linux-${BIN_MIDDLE}-
 
-	export ISYSTEM="-isystem ${LLVM_PREFIX}/sysroot/usr/include/${ARCH_NAME}-linux-${BIN_MIDDLE} -isystem ${LLVM_PREFIX}/sysroot/usr/include"
+	export ISYSTEM="--sysroot=${LLVM_PREFIX}/sysroot"
 	export EXTRA_CFLAGS="${ISYSTEM}"
 
 	export CFLAGS="-DANDROID -fpic -fpie ${OPTIMIZE_CFLAGS} ${ISYSTEM}"
