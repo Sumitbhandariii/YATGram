@@ -45,11 +45,11 @@ options = []
 runCommand = []
 customRunCommand = False
 for arg in sys.argv[1:]:
-    if arg == "arm64":
+    if arg == "arm64" or arg == "arm64-v8a":
         arm64 = True
         arches.append(arg)
         options.append(arg)
-    if arg == "arm":
+    if arg == "arm" or arg == "armeabi-v7a":
         arm = True
         arches.append(arg)
         options.append(arg)
@@ -462,8 +462,9 @@ stage('tdlib', """
         SED_CMDS+="s/x86_64//g;"
     fi
 
-    if ! [[ "{archesStr}" =~ "x86" ]]; then
-        SED_CMDS+="s/x86//g;"
+    re='\<x86\>'
+    if ! [[ "{archesStr}" =~ $re ]]; then
+        SED_CMDS+="s/x86 //g;"
     fi
 
     comment_line() {{

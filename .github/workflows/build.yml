@@ -74,7 +74,7 @@ jobs:
               IFS='.' read -ra BUILDNUMBER <<< ${{github.ref}}
               echo "ADDITIONAL_BUILD_NUMBER=${BUILDNUMBER[3]}" >> $GITHUB_ENV
           else
-              echo "ADDITIONAL_BUILD_NUMBER=0" >> $GITHUB_ENV
+              echo "ADDITIONAL_BUILD_NUMBER=${{ vars.ADDITIONAL_BUILD }}" >> $GITHUB_ENV
           fi
           # used for check updates
           echo "USER_REPO=forkgram/TelegramAndroid" >> $GITHUB_ENV
@@ -100,15 +100,21 @@ jobs:
 
           sudo apt update
           sudo apt install ninja-build meson gperf
-          ./gradlew :TMessagesProj_App:${{ matrix.afat }}
+          ./gradlew :TMessagesProj_App:${{ matrix.afat }} -PabiFilters=armeabi-v7a,arm64-v8a
 
           grep VERSION_NAME TMessagesProj/build/generated/source/buildConfig/${{ matrix.typeb }}/org/telegram/messenger/BuildConfig.java | cut -d'"' -f 2 > ver.txt
 
           mkdir artifact
           mv TMessagesProj_App/build/outputs/apk/afat/${{ matrix.typeb }}/app.apk app.apk
-          cp app.apk "artifact/YATGram_$(cat ver.txt)${{ matrix.name }}.apk"
+          mv TMessagesProj_App/build/outputs/apk/afat/${{ matrix.typeb }}/afatRelease-armeabi-v7a.apk afatRelease-armeabi-v7a.apk
+          mv TMessagesProj_App/build/outputs/apk/afat/${{ matrix.typeb }}/afatRelease-arm64-v8a.apk afatRelease-arm64-v8a.apk
+          cp app.apk "artifact/YATGram_$(cat ver.txt)${{ matrix.name }}-allarm.apk"
+          cp afatRelease-armeabi-v7a.apk "artifact/YATGram_$(cat ver.txt)${{ matrix.name }}-armeabi-v7a.apk"
+          cp afatRelease-arm64-v8a.apk "artifact/YATGram_$(cat ver.txt)${{ matrix.name }}-arm64-v8a.apk"
           mkdir tag_asset
-          cp app.apk "tag_asset/YATGram_$(cat ver.txt)${{ matrix.name }}.apk"
+          cp app.apk "tag_asset/YATGram_$(cat ver.txt)${{ matrix.name }}-allarm.apk"
+          cp afatRelease-armeabi-v7a.apk "tag_asset/YATGram_$(cat ver.txt)${{ matrix.name }}-armeabi-v7a.apk"
+          cp afatRelease-arm64-v8a.apk "tag_asset/YATGram_$(cat ver.txt)${{ matrix.name }}-arm64-v8a.apk"
 
           echo "NEW_TAG_TEXT=$(cat ver.txt)" >> $GITHUB_ENV
 

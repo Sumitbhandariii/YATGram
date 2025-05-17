@@ -43,6 +43,9 @@ function build_one {
 
 	echo "Configuring..."
 
+	# with clang ld flags m32/m64 are wrongs
+	sed -i '/^[[:space:]]*add_ldflags -m\${bits}[[:space:]]*$/d' build/make/configure.sh
+
 	./configure \
 		--extra-cflags="${EXTRA_CFLAGS}" \
 		--libc="${LLVM_PREFIX}/sysroot" \
@@ -143,7 +146,7 @@ function build {
 				CLANG_PREFIX=x86_64
 				BIN_MIDDLE=android
 				CPU=x86_64
-				OPTIMIZE_CFLAGS="-O3 -march=x86-64 -mtune=intel -msse4.2 -mpopcnt -m64 -fPIC"
+				OPTIMIZE_CFLAGS="-O3 -march=x86-64 -mtune=x86-64 -msse4.2 -mpopcnt -m64 -fPIC"
 				TARGET="x86_64-android-gcc"
 				PREFIX=./build/$CPU
 				CPU_DETECT="--enable-runtime-cpu-detect"
@@ -156,13 +159,13 @@ function build {
 				CLANG_PREFIX=i686
 				BIN_MIDDLE=android
 				CPU=i686
-				OPTIMIZE_CFLAGS="-O3 -march=i686 -mtune=intel -msse3 -mfpmath=sse -m32 -fPIC"
+				OPTIMIZE_CFLAGS="-O3 -march=i686 -mtune=i686 -msse3 -mfpmath=sse -m32 -fPIC"
 				TARGET="x86-android-gcc"
 				PREFIX=./build/$ARCH
 				CPU_DETECT="--enable-runtime-cpu-detect"
 				build_one
 			;;
-			arm64)
+			arm64|arm64-v8a)
 				ARCH=arm64
 				ARCH_NAME=aarch64
 				PREBUILT_ARCH=aarch64
@@ -175,7 +178,7 @@ function build {
 				CPU_DETECT="--disable-runtime-cpu-detect"
 				build_one
 			;;
-			arm)
+			arm|armeabi-v7a)
 				ARCH=arm
 				ARCH_NAME=arm
 				PREBUILT_ARCH=arm

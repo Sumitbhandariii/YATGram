@@ -117,36 +117,7 @@ android {
     flavorDimensions "minApi"
 
     productFlavors {
-        bundleAfat {
-            ndk {
-                abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
-            }
-            ext {
-                abiVersionCode = 1
-            }
-        }
-        bundleAfat_SDK23 {
-            ndk {
-                abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
-            }
-            sourceSets.debug {
-                manifest.srcFile '../TMessagesProj/config/debug/AndroidManifest_SDK23.xml'
-            }
-            sourceSets.release {
-                manifest.srcFile '../TMessagesProj/config/release/AndroidManifest_SDK23.xml'
-            }
-            sourceSets.standalone {
-                manifest.srcFile '../TMessagesProj/config/release/AndroidManifest_standalone.xml'
-            }
-            minSdkVersion 23
-            ext {
-                abiVersionCode = 2
-            }
-        }
         afat {
-            ndk {
-                abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
-            }
             sourceSets.debug {
                 manifest.srcFile '../TMessagesProj/config/debug/AndroidManifest_SDK23.xml'
             }
@@ -163,11 +134,27 @@ android {
         }
     }
 
+    splits {
+        abi {
+            enable true
+            reset()
+
+            def abiFiltersParam = project.hasProperty('abiFilters') ? project.abiFilters.split(',') : abiFiltersList.split(',')
+            include abiFiltersParam
+            universalApk true // generate app.apk with all archs
+        }
+    }
+
     defaultConfig.versionCode = Integer.parseInt(Utils['getVersionCode']())
 
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
-            outputFileName = "app.apk"
+            def abiFilter = output.getFilter(com.android.build.OutputFile.ABI)
+            if (abiFilter != null) {
+                outputFileName = "${variant.name}-${abiFilter}.apk"
+            } else {
+                outputFileName = "app.apk"
+            }
             output.versionCodeOverride = defaultConfig.versionCode * 10 + variant.productFlavors.get(0).abiVersionCode
         }
     }
@@ -196,13 +183,6 @@ android {
             cmake {
                 version = '3.21.0+'
                 arguments '-DANDROID_STL=c++_static', '-DANDROID_PLATFORM=android-23'
-                if (project.hasProperty("armeabi-v7a")) {
-                    abiFilters 'armeabi-v7a'
-                } else if (project.hasProperty("arm64-v8a")) {
-                    abiFilters 'arm64-v8a'
-                } else {
-                    abiFilters 'armeabi-v7a', 'arm64-v8a'
-                }
             }
         }
     }

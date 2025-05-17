@@ -193,7 +193,7 @@ function build {
 				ADDITIONAL_CONFIGURE_FLAG="--disable-asm"
 				build_one
 			;;
-			arm64)
+			arm64|arm64-v8a)
 				ANDROID_API=23
 
 				ARCH=arm64
@@ -210,7 +210,7 @@ function build {
 				ADDITIONAL_CONFIGURE_FLAG="--enable-neon --enable-optimizations"
 				build_one
 			;;
-			arm)
+			arm|armeabi-v7a)
 				ANDROID_API=23
 
 				ARCH=arm

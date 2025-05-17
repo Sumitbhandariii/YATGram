@@ -133,7 +133,7 @@ function build {
 
 				build_one
 			;;
-			arm64)
+			arm64|arm64-v8a)
 				ANDROID_API=23
 
 				ARCH=arm64
@@ -153,7 +153,7 @@ function build {
 
 				build_one
 			;;
-			arm)
+			arm|armeabi-v7a)
 				ANDROID_API=23
 
 				ARCH=arm
