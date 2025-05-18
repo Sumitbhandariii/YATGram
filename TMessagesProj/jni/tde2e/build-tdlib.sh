@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ANDROID_SDK_ROOT=${1:-SDK}
-ANDROID_NDK_VERSION=${2:-27.2.12479018}
+ANDROID_NDK_VERSION=${2:-28.1.13356709}
 OPENSSL_INSTALL_DIR=${3:-third-party/openssl}
 ANDROID_STL=${4:-c++_static}
 TDLIB_INTERFACE=${5:-Java}

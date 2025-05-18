@@ -25,3 +25,18 @@ YATGram is a fork of the unofficial Telegram Fork Client
 <sub><sup>** Don't bypass contents protected with stars</sup></sub>
 ### Privacy Features:
 - All features of ForkGram/Fork Client less show number in ProfileCell
+
+## Requirement:
+- Android 7 (API Level 24)
+
+*Official Telegram require Android 6 but with update of NDK, Android 7 is required*
+
+## Download and Update:
+
+*At the moment the only source of updates is GitHub.*
+
+| Source | Status | Version |
+|--------|--------|---------|
+| [GitHub](https://github.com/et-ness/YATGram/releases) / [Obtainium](https://github.com/ImranR98/Obtainium) | ![GitHub Release](https://img.shields.io/github/v/release/et-ness/YATGram?include_prereleases&logo=GitHub&label=GitHub) | arm64 / arm / both arm |
+
+*From release 11.9.1.2 you have the splitted apk, one for each supported architecture arm64-v8a and armeabi-v7a or a single apk with all the arm versions. Choosing one of the versions saves about 20MB of space.*
