@@ -173,7 +173,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 34
         versionName Utils['getVersionName']()
-        ndkVersion = "28.1.13356709"
+        ndkVersion = "27.2.12479018"
 
         multiDexEnabled = true
 
