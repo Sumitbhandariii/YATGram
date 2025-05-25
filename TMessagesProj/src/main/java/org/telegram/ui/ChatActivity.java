@@ -3487,6 +3487,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             if (chatActivity != null && chatActivity.getDialogId() == UserObject.VERIFY) {
                 return true;
             }
+            if (MessagesController.getGlobalMainSettings().getBoolean("byPassRestrictedContent", false)) {
+                return true;
+            }
             return chatActivity == null || !(
                 chatActivity.getDialogId() < 0 && chatActivity.getMessagesController().isChatNoForwards(-chatActivity.getDialogId()) ||
                 selectedView != null && selectedView.getMessageObject() != null && (selectedView.getMessageObject().messageOwner != null && selectedView.getMessageObject().messageOwner.noforwards)
