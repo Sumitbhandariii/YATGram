@@ -429,7 +429,7 @@ stage('boringssl', """
     echo "Built archs: {archesStr}"
 """.format(ndk=ndkPath,archesStr=' '.join(arches)))
 
-stage('tdlib', """
+stage('tdlib', r"""
     source_dir=`pwd`/tdlib
 
     git submodule init && git submodule update
