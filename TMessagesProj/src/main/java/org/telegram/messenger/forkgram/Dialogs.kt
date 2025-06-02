@@ -278,4 +278,26 @@ public fun CreateFieldAlert(
     editText.layoutParams = layoutParams;
 }
 
+@JvmStatic
+public fun CreateListAlert(
+        context: Context,
+        title: String,
+        defaultValue: String,
+        items: ArrayList<String>,
+        onItemSelected: (selectedItem: String?) -> Unit) {
+    val itemsArray = items.toTypedArray()
+
+    AlertDialog.Builder(context)
+        .setTitle(title)
+        .setItems(itemsArray) { _, which ->
+            if (which == 0) {
+                onItemSelected(defaultValue)
+            } else {
+                onItemSelected(itemsArray[which])
+            }
+        }
+        .setNegativeButton(LocaleController.getString("Cancel", R.string.Cancel), null)
+        .show()
+}
+
 }

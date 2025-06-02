@@ -13,6 +13,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessagesController;
+import org.telegram.messenger.UnifiedPushService;
 import org.telegram.messenger.R;
 import org.telegram.messenger.SharedConfig;
 import org.telegram.ui.ActionBar.ActionBar;
@@ -37,6 +39,9 @@ import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.RecyclerListView;
 import org.telegram.ui.Cells.ChatMessageCell;
 import org.telegram.ui.Components.SeekBarView;
+
+import org.unifiedpush.android.connector.UnifiedPush;
+import static org.unifiedpush.android.connector.ConstantsKt.INSTANCE_DEFAULT;
 
 import java.lang.reflect.*;
 import java.util.ArrayList;
@@ -170,6 +175,7 @@ public class ForkSettingsActivity extends BaseFragment {
     private int hideAds;
     private int byPassRestrictedContent;
     private int hideFloatingButton;
+    private int chooseUnifiedPush;
     // end YATGram
 
     private int stickerSizeRow;
@@ -215,6 +221,7 @@ public class ForkSettingsActivity extends BaseFragment {
         showNotificationContent = rowCount++;
         hideBottomButton = SharedConfig.isUserOwner() ? rowCount++ : -1;
         lockPremium = rowCount++;
+        chooseUnifiedPush = rowCount++;
 
         emptyRows.add(rowCount++);
         sectionRows.add(rowCount++);
@@ -377,6 +384,31 @@ public class ForkSettingsActivity extends BaseFragment {
                 toggleGlobalMainSetting("byPassRestrictedContent", view, false);
             } else if (position == hideFloatingButton) {
                 toggleGlobalMainSetting("hideFloatingButton", view, true);
+            } else if (position == chooseUnifiedPush) {
+                String sNoneProvider = LocaleController.getString("chooseUnifiedPushProvidersDisabled", R.string.chooseUnifiedPushProvidersDisabled);
+                ArrayList<String> alUPProviders = new ArrayList<>();
+                alUPProviders.add(sNoneProvider); // none provider
+                alUPProviders.addAll(UnifiedPush.getDistributors(context));
+                org.telegram.messenger.forkgram.ForkDialogs.CreateListAlert(
+                    context,
+                    LocaleController.getString("chooseUnifiedPushProviders", R.string.chooseUnifiedPushProviders),
+                    "", // default value empty
+                    alUPProviders,
+                    (result) -> {
+                        SharedPreferences.Editor editor = MessagesController.getGlobalMainSettings().edit();
+                        editor.putString("UPProvider", result);
+                        editor.commit();
+                        if (result.isEmpty()) { // default value none provider remove all
+                            UnifiedPush.removeDistributor(context);
+                            UnifiedPushService.unregister();
+                            result = sNoneProvider;
+                        }
+                        if (view instanceof TextSettingsCell) {
+                            ((TextSettingsCell) view).getValueTextView().setText(result);
+                        }
+                        Toast.makeText(getParentActivity(), LocaleController.getString("SquareAvatarsInfo", R.string.SquareAvatarsInfo), Toast.LENGTH_SHORT).show();
+                        return null;
+                    });
             } else if (position == replaceForward) {
                 toggleGlobalMainSetting("replaceForward", view, true);
             } else if (position == mentionByName) {
@@ -457,6 +489,13 @@ public class ForkSettingsActivity extends BaseFragment {
                     if (position == customTitleRow) {
                         String t = LocaleController.getString("EditAdminRank", R.string.EditAdminRank);
                         final String v = MessagesController.getGlobalMainSettings().getString("CustomTitle", "YATGram");
+                        textCell.setTextAndValue(t, v, false);
+                    } else if (position == chooseUnifiedPush) {
+                        String t = LocaleController.getString("chooseUnifiedPushProviders", R.string.chooseUnifiedPushProviders);
+                        String v = MessagesController.getGlobalMainSettings().getString("UPProvider", "");
+                        if (v.isEmpty()) {
+                            v = LocaleController.getString("chooseUnifiedPushProvidersDisabled", R.string.chooseUnifiedPushProvidersDisabled);
+                        }
                         textCell.setTextAndValue(t, v, false);
                     }
                     break;
@@ -616,6 +655,7 @@ public class ForkSettingsActivity extends BaseFragment {
                         || position == hideAds
                         || position == byPassRestrictedContent
                         || position == hideFloatingButton
+                        || position == chooseUnifiedPush
                         || position == replaceForward
                         || position == mentionByName
                         || position == openArchiveOnPull
@@ -665,7 +705,8 @@ public class ForkSettingsActivity extends BaseFragment {
         public int getItemViewType(int position) {
             if (emptyRows.contains(position)) {
                 return 1;
-            } else if (position == customTitleRow) {
+            } else if (position == customTitleRow
+                || position == chooseUnifiedPush) {
                 return 2;
             } else if (position == squareAvatarsRow
                 || position == hideSensitiveDataRow
