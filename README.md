@@ -19,6 +19,7 @@ YATGram is a fork of the unofficial Telegram Fork Client
 - QR Login
 - Changed order of buttons in Chat
 - Bypass restrict contents where is not allowed**
+- Web Push notifications with UnifiedPush
 
 <sub><sup>* Theoretically unlimited, but over 40 there are crashes in the app, if you want more than 40 accounts you can install version 2, same app with different package name, where you can configure other 40 accounts. I don't think it will ever be useful to anyone, but anyway you have it.</sup></sub>
 
@@ -40,3 +41,13 @@ YATGram is a fork of the unofficial Telegram Fork Client
 | [GitHub](https://github.com/et-ness/YATGram/releases) / [Obtainium](https://github.com/ImranR98/Obtainium) | ![GitHub Release](https://img.shields.io/github/v/release/et-ness/YATGram?include_prereleases&logo=GitHub&label=GitHub) | arm64 / arm / both arm |
 
 *From release 11.9.1.2 you have the splitted apk, one for each supported architecture arm64-v8a and armeabi-v7a or a single apk with all the arm versions. Choosing one of the versions saves about 20MB of space.*
+
+## UnifiedPush:
+
+UnifiedPush is FOSS. You can install your server and configure in one of the distributor apps or just use one free service as mozilla Web Push with SunUP
+
+[Here](https://unifiedpush.org/users/distributors/) for more informations.
+
+To make it work you need to install at least one distributor app and configure in Settings -> Fork Client Setting -> UnifiedPush provider, after restart the app.
+
+Push notifications are encrypted with end-to-end encryption over https, only your client and telegram know the content.
