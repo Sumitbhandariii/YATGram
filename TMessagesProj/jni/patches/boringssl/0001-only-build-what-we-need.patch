@@ -1,5 +1,51 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 6e1592db7..2496ee831 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -38,7 +38,6 @@ enable_language(CXX)
+ 
+ # TODO(crbug,com/389897612): Register tests with CTest. For now, we include this
+ # only to pick up the standard |BUILD_TESTING| option.
+-include(CTest)
+ include(GNUInstallDirs)
+ 
+ set(INSTALL_ENABLED 1)
+@@ -662,15 +661,9 @@ add_library(ssl ${SSL_SOURCES})
+ set_property(TARGET ssl PROPERTY EXPORT_NAME SSL)
+ target_link_libraries(ssl crypto)
+ 
+-add_library(decrepit ${DECREPIT_SOURCES})
+-target_link_libraries(decrepit ssl crypto)
+-
+ if(APPLE)
+   set(PKI_CXX_FLAGS "-fno-aligned-new")
+ endif()
+-add_library(pki ${PKI_SOURCES})
+-target_link_libraries(pki crypto)
+-target_compile_options(pki PRIVATE ${PKI_CXX_FLAGS})
+ 
+ if(BUILD_TESTING)
+   add_library(test_support_lib STATIC
+@@ -718,9 +711,6 @@ if(FIPS)
+   target_link_libraries(modulewrapper crypto)
+ endif()
+ 
+-add_executable(bssl ${BSSL_SOURCES})
+-target_link_libraries(bssl ssl crypto)
+-
+ if(FUZZ)
+   if(LIBFUZZER_FROM_DEPS)
+     file(GLOB LIBFUZZER_SOURCES "util/bot/libFuzzer/*.cpp")
+@@ -805,7 +795,6 @@ endif()
+ 
+ if(INSTALL_ENABLED)
+   install(TARGETS crypto ssl EXPORT OpenSSLTargets)
+-  install(TARGETS bssl)
+   install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+   install(EXPORT OpenSSLTargets
+           FILE OpenSSLTargets.cmake
 diff --git a/gen/sources.cmake b/gen/sources.cmake
-index 39cd4e4fe..4fdb817eb 100644
+index 5adf81000..3697bd92b 100644
 --- a/gen/sources.cmake
 +++ b/gen/sources.cmake
 @@ -242,35 +242,6 @@ set(
@@ -38,7 +84,7 @@ index 39cd4e4fe..4fdb817eb 100644
  set(
    CRYPTO_SOURCES
  
-@@ -726,409 +697,6 @@ set(
+@@ -734,412 +705,6 @@ set(
    gen/crypto/md5-x86_64-win.asm
  )
  
@@ -119,6 +165,9 @@ index 39cd4e4fe..4fdb817eb 100644
 -  crypto/trust_token/trust_token_test.cc
 -  crypto/x509/x509_test.cc
 -  crypto/x509/x509_time_test.cc
+-  crypto/xwing/xwing_test.cc
+-  third_party/fiat/bedrock_platform_test.cc
+-  third_party/fiat/bedrock_polyfill_platform.c.inc
 -)
 -
 -set(
@@ -448,7 +497,7 @@ index 39cd4e4fe..4fdb817eb 100644
  set(
    FUZZ_SOURCES
  
-@@ -1181,1617 +749,6 @@ set(
+@@ -1192,1617 +757,6 @@ set(
    util/fipstools/acvp/modulewrapper/modulewrapper.h
  )
  
@@ -2066,7 +2115,7 @@ index 39cd4e4fe..4fdb817eb 100644
  set(
    SSL_SOURCES
  
-@@ -2850,72 +807,3 @@ set(
+@@ -2861,72 +815,3 @@ set(
  
    ssl/internal.h
  )
@@ -2139,49 +2188,3 @@ index 39cd4e4fe..4fdb817eb 100644
 -
 -  crypto/rand/urandom_test.cc
 -)
-diff --git a/CMakeLists.txt b/CMakeLists.txt
-index bb01da1af..27a940c72 100644
---- a/CMakeLists.txt
-+++ b/CMakeLists.txt
-@@ -38,7 +38,6 @@ enable_language(CXX)
- 
- # TODO(crbug,com/389897612): Register tests with CTest. For now, we include this
- # only to pick up the standard |BUILD_TESTING| option.
--include(CTest)
- include(GNUInstallDirs)
- 
- set(INSTALL_ENABLED 1)
-@@ -662,15 +661,9 @@ add_library(ssl ${SSL_SOURCES})
- set_property(TARGET ssl PROPERTY EXPORT_NAME SSL)
- target_link_libraries(ssl crypto)
- 
--add_library(decrepit ${DECREPIT_SOURCES})
--target_link_libraries(decrepit ssl crypto)
--
- if(APPLE)
-   set(PKI_CXX_FLAGS "-fno-aligned-new")
- endif()
--add_library(pki ${PKI_SOURCES})
--target_link_libraries(pki crypto)
--target_compile_options(pki PRIVATE ${PKI_CXX_FLAGS})
- 
- if(BUILD_TESTING)
-   add_library(test_support_lib STATIC
-@@ -718,9 +711,6 @@ if(FIPS)
-   target_link_libraries(modulewrapper crypto)
- endif()
- 
--add_executable(bssl ${BSSL_SOURCES})
--target_link_libraries(bssl ssl crypto)
--
- if(FUZZ)
-   if(LIBFUZZER_FROM_DEPS)
-     file(GLOB LIBFUZZER_SOURCES "util/bot/libFuzzer/*.cpp")
-@@ -805,7 +795,6 @@ endif()
- 
- if(INSTALL_ENABLED)
-   install(TARGETS crypto ssl EXPORT OpenSSLTargets)
--  install(TARGETS bssl)
-   install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-   install(EXPORT OpenSSLTargets
-           FILE OpenSSLTargets.cmake
