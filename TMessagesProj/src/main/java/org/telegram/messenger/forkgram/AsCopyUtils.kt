@@ -122,7 +122,7 @@ fun PerformForwardFromMyName(
         val copyText = currentReplaceText();
         queue.add {
             val instance = SendMessagesHelper.getInstance(currentAccount);
-            instance.processForwardFromMyName(copyMsg, key, 0, 0, copyText, notify, topicId)
+            instance.processForwardFromMyName(copyMsg, key, 0, 0, null, copyText, notify, topicId)
             deque();
         }
     }
@@ -265,8 +265,6 @@ fun SendItemsAsAlbum(
             accountInstance.messagesController.processUpdates(response as Updates, false)
             AndroidUtilities.runOnUIThread { finish(); }
             return@sendRequest
-        }
-        if (error != null) {
         }
         if (!FileRefController.isFileRefError(error.text)) {
             showToast("It seems that you want to group incompatible file types.");
