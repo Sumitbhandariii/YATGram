@@ -51,6 +51,8 @@ dependencies {
 
     implementation 'org.apache.commons:commons-lang3:3.13.0'
 
+//    implementation 'com.google.mlkit:translate:17.0.3'
+
     constraints {
         implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {
             because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")
@@ -152,6 +154,7 @@ android {
             buildConfigField "boolean", "DEBUG_VERSION", "true"
             buildConfigField "boolean", "DEBUG_PRIVATE_VERSION", "true"
             buildConfigField "boolean", "BUILD_HOST_IS_WINDOWS", isWindows
+            buildConfigField "int", "VERSION_NUM", "0"
         }
 
         standalone {
@@ -165,6 +168,7 @@ android {
             buildConfigField "boolean", "DEBUG_VERSION", "false"
             buildConfigField "boolean", "DEBUG_PRIVATE_VERSION", "false"
             buildConfigField "boolean", "BUILD_HOST_IS_WINDOWS", isWindows
+            buildConfigField "int", "VERSION_NUM", "6"
         }
 
         release {
@@ -179,6 +183,7 @@ android {
             buildConfigField "boolean", "DEBUG_VERSION", "false"
             buildConfigField "boolean", "DEBUG_PRIVATE_VERSION", "false"
             buildConfigField "boolean", "BUILD_HOST_IS_WINDOWS", isWindows
+            buildConfigField "int", "VERSION_NUM", "7"
         }
     }
     namespace = 'org.telegram.messenger'

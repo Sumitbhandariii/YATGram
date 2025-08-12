@@ -1,5 +1,5 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 6e1592db7..2496ee831 100644
+index 06ce07e95..c34d6d24a 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -38,7 +38,6 @@ enable_language(CXX)
@@ -10,7 +10,7 @@ index 6e1592db7..2496ee831 100644
  include(GNUInstallDirs)
  
  set(INSTALL_ENABLED 1)
-@@ -662,15 +661,9 @@ add_library(ssl ${SSL_SOURCES})
+@@ -664,9 +663,6 @@ add_library(ssl ${SSL_SOURCES})
  set_property(TARGET ssl PROPERTY EXPORT_NAME SSL)
  target_link_libraries(ssl crypto)
  
@@ -20,13 +20,17 @@ index 6e1592db7..2496ee831 100644
  if(APPLE)
    set(PKI_CXX_FLAGS "-fno-aligned-new")
  endif()
+@@ -670,9 +670,6 @@ target_link_libraries(decrepit ssl crypto)
+ if(APPLE)
+   set(PKI_CXX_FLAGS "-fno-aligned-new")
+ endif()
 -add_library(pki ${PKI_SOURCES})
 -target_link_libraries(pki crypto)
 -target_compile_options(pki PRIVATE ${PKI_CXX_FLAGS})
  
  if(BUILD_TESTING)
    add_library(test_support_lib STATIC
-@@ -718,9 +711,6 @@ if(FIPS)
+@@ -720,9 +716,6 @@ if(FIPS)
    target_link_libraries(modulewrapper crypto)
  endif()
  
@@ -36,7 +40,7 @@ index 6e1592db7..2496ee831 100644
  if(FUZZ)
    if(LIBFUZZER_FROM_DEPS)
      file(GLOB LIBFUZZER_SOURCES "util/bot/libFuzzer/*.cpp")
-@@ -805,7 +795,6 @@ endif()
+@@ -812,7 +805,6 @@ endif()
  
  if(INSTALL_ENABLED)
    install(TARGETS crypto ssl EXPORT OpenSSLTargets)
@@ -45,7 +49,7 @@ index 6e1592db7..2496ee831 100644
    install(EXPORT OpenSSLTargets
            FILE OpenSSLTargets.cmake
 diff --git a/gen/sources.cmake b/gen/sources.cmake
-index 5adf81000..3697bd92b 100644
+index df53126ed..1a7f26684 100644
 --- a/gen/sources.cmake
 +++ b/gen/sources.cmake
 @@ -242,35 +242,6 @@ set(
@@ -84,7 +88,7 @@ index 5adf81000..3697bd92b 100644
  set(
    CRYPTO_SOURCES
  
-@@ -734,412 +705,6 @@ set(
+@@ -735,424 +706,6 @@ set(
    gen/crypto/md5-x86_64-win.asm
  )
  
@@ -236,8 +240,10 @@ index 5adf81000..3697bd92b 100644
 -  crypto/hmac/hmac_tests.txt
 -  crypto/hpke/hpke_test_vectors.txt
 -  crypto/kyber/kyber_tests.txt
+-  crypto/mldsa/mldsa_nist_keygen_44_tests.txt
 -  crypto/mldsa/mldsa_nist_keygen_65_tests.txt
 -  crypto/mldsa/mldsa_nist_keygen_87_tests.txt
+-  crypto/mldsa/mldsa_nist_siggen_44_tests.txt
 -  crypto/mldsa/mldsa_nist_siggen_65_tests.txt
 -  crypto/mldsa/mldsa_nist_siggen_87_tests.txt
 -  crypto/mlkem/mlkem1024_decap_tests.txt
@@ -274,6 +280,14 @@ index 5adf81000..3697bd92b 100644
 -  crypto/pkcs8/test/unicode_password.p12
 -  crypto/pkcs8/test/windows.p12
 -  crypto/poly1305/poly1305_tests.txt
+-  crypto/rsa/test/rsa511.pem
+-  crypto/rsa/test/rsa511pub.pem
+-  crypto/rsa/test/rsa512.pem
+-  crypto/rsa/test/rsa512pub.pem
+-  crypto/rsa/test/rsa8192.pem
+-  crypto/rsa/test/rsa8192pub.pem
+-  crypto/rsa/test/rsa8193.pem
+-  crypto/rsa/test/rsa8193pub.pem
 -  crypto/siphash/siphash_tests.txt
 -  crypto/slhdsa/slhdsa_keygen.txt
 -  crypto/slhdsa/slhdsa_prehash.txt
@@ -404,6 +418,8 @@ index 5adf81000..3697bd92b 100644
 -  third_party/wycheproof_testvectors/hmac_sha512_test.txt
 -  third_party/wycheproof_testvectors/kw_test.txt
 -  third_party/wycheproof_testvectors/kwp_test.txt
+-  third_party/wycheproof_testvectors/mldsa_44_standard_sign_test.txt
+-  third_party/wycheproof_testvectors/mldsa_44_standard_verify_test.txt
 -  third_party/wycheproof_testvectors/mldsa_65_standard_sign_test.txt
 -  third_party/wycheproof_testvectors/mldsa_65_standard_verify_test.txt
 -  third_party/wycheproof_testvectors/mldsa_87_standard_sign_test.txt
@@ -497,7 +513,7 @@ index 5adf81000..3697bd92b 100644
  set(
    FUZZ_SOURCES
  
-@@ -1192,1617 +757,6 @@ set(
+@@ -1205,1617 +758,6 @@ set(
    util/fipstools/acvp/modulewrapper/modulewrapper.h
  )
  
@@ -2115,7 +2131,7 @@ index 5adf81000..3697bd92b 100644
  set(
    SSL_SOURCES
  
-@@ -2861,72 +815,3 @@ set(
+@@ -2874,72 +816,3 @@ set(
  
    ssl/internal.h
  )
