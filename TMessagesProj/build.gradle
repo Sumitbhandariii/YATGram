@@ -73,7 +73,7 @@ def getStringForConfig(String s) {
 
 def isWindows = String.valueOf(DefaultNativePlatform.currentOperatingSystem.toFamilyName() == OperatingSystemFamily.WINDOWS)
 android {
-    compileSdkVersion 34
+    compileSdkVersion 35
     buildToolsVersion '36.0.0'
     ndkVersion = "28.2.13676358"
 
@@ -106,7 +106,7 @@ android {
 
     defaultConfig {
         minSdkVersion 24
-        targetSdkVersion 34
+        targetSdkVersion 35
 
         vectorDrawables.generatedDensities = ['mdpi', 'hdpi', 'xhdpi', 'xxhdpi']
 
@@ -136,7 +136,7 @@ android {
         externalNativeBuild {
             cmake {
                 version = '3.21.0+'
-                arguments '-DANDROID_STL=c++_static', '-DANDROID_PLATFORM=android-24'
+                arguments '-DANDROID_STL=c++_static', '-DANDROID_PLATFORM=android-24' //, '-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON'
             }
         }
     }
@@ -186,7 +186,7 @@ android {
             buildConfigField "int", "VERSION_NUM", "7"
         }
     }
-    namespace = 'org.telegram.messenger'
+    namespace 'org.telegram.messenger'
 }
 
 

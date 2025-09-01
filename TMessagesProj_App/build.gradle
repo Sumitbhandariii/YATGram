@@ -27,10 +27,8 @@ dependencies {
 }
 
 android {
-    compileSdkVersion 34
+    compileSdkVersion 35
     buildToolsVersion '36.0.0'
-
-    defaultConfig.applicationId = "org.yatgram.messenger"
 
     defaultConfig.applicationId = APP_PACKAGE
     def sAppName = Utils['appPackage']()
@@ -51,7 +49,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_21
         targetCompatibility JavaVersion.VERSION_21
 
-        coreLibraryDesugaringEnabled = true
+        coreLibraryDesugaringEnabled true
     }
 
     buildFeatures {
@@ -177,7 +175,7 @@ android {
 
     defaultConfig {
         minSdkVersion 24
-        targetSdkVersion 34
+        targetSdkVersion 35
         versionName Utils['getVersionName']()
         ndkVersion = "28.2.13676358"
 
@@ -188,7 +186,7 @@ android {
         externalNativeBuild {
             cmake {
                 version = '3.21.0+'
-                arguments '-DANDROID_STL=c++_static', '-DANDROID_PLATFORM=android-24'
+                arguments '-DANDROID_STL=c++_static', '-DANDROID_PLATFORM=android-24' // , '-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON'
             }
         }
     }

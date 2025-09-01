@@ -47,9 +47,8 @@ index 06ce07e95..c34d6d24a 100644
 -  install(TARGETS bssl)
    install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
    install(EXPORT OpenSSLTargets
-           FILE OpenSSLTargets.cmake
-diff --git a/gen/sources.cmake b/gen/sources.cmake
-index df53126ed..1a7f26684 100644
+           FILE OpenSSLTargets.cmakediff --git a/gen/sources.cmake b/gen/sources.cmake
+index 00ac47eec..b80e28aae 100644
 --- a/gen/sources.cmake
 +++ b/gen/sources.cmake
 @@ -242,35 +242,6 @@ set(
@@ -88,7 +87,7 @@ index df53126ed..1a7f26684 100644
  set(
    CRYPTO_SOURCES
  
-@@ -735,424 +706,6 @@ set(
+@@ -734,425 +705,6 @@ set(
    gen/crypto/md5-x86_64-win.asm
  )
  
@@ -236,6 +235,7 @@ index df53126ed..1a7f26684 100644
 -  crypto/fipsmodule/ecdsa/ecdsa_sign_tests.txt
 -  crypto/fipsmodule/ecdsa/ecdsa_verify_tests.txt
 -  crypto/fipsmodule/keccak/keccak_tests.txt
+-  crypto/fipsmodule/rand/ctrdrbg_df_vectors.txt
 -  crypto/fipsmodule/rand/ctrdrbg_vectors.txt
 -  crypto/hmac/hmac_tests.txt
 -  crypto/hpke/hpke_test_vectors.txt
@@ -513,7 +513,7 @@ index df53126ed..1a7f26684 100644
  set(
    FUZZ_SOURCES
  
-@@ -1205,1617 +758,6 @@ set(
+@@ -1205,1617 +757,6 @@ set(
    util/fipstools/acvp/modulewrapper/modulewrapper.h
  )
  
@@ -2131,7 +2131,7 @@ index df53126ed..1a7f26684 100644
  set(
    SSL_SOURCES
  
-@@ -2874,72 +816,3 @@ set(
+@@ -2874,72 +815,3 @@ set(
  
    ssl/internal.h
  )

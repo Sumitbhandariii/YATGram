@@ -83,6 +83,8 @@ public class BillingController {
         return formatCurrency(amount, currency, exp, false);
     }
 
+    private static NumberFormat currencyInstance;
+    private static NumberFormat currencyInstanceRounded;
     public String formatCurrency(long amount, String currency, int exp, boolean rounded) {
         if (currency == null || currency.isEmpty()) {
             return String.valueOf(amount);
@@ -98,9 +100,14 @@ public class BillingController {
             NumberFormat numberFormat = NumberFormat.getCurrencyInstance();
             numberFormat.setCurrency(cur);
             if (rounded) {
-                return numberFormat.format(Math.round(amount / Math.pow(10, exp)));
+                currencyInstance.setMaximumFractionDigits(0);
+                currencyInstance.setMinimumFractionDigits(0);
+                return currencyInstance.format(Math.round(amount / Math.pow(10, exp)));
             }
-            return numberFormat.format(amount / Math.pow(10, exp));
+            final int defaultFractionDigits = cur.getDefaultFractionDigits();
+            currencyInstance.setMinimumFractionDigits(defaultFractionDigits);
+            currencyInstance.setMaximumFractionDigits(defaultFractionDigits);
+            return currencyInstance.format(amount / Math.pow(10, exp));
         }
         return amount + " " + currency;
     }
