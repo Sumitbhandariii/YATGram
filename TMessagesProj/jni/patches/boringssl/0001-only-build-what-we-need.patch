@@ -1,5 +1,5 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 06ce07e95..c34d6d24a 100644
+index 23bd9bba4..c4577b8df 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -38,7 +38,6 @@ enable_language(CXX)
@@ -10,7 +10,7 @@ index 06ce07e95..c34d6d24a 100644
  include(GNUInstallDirs)
  
  set(INSTALL_ENABLED 1)
-@@ -664,9 +663,6 @@ add_library(ssl ${SSL_SOURCES})
+@@ -649,15 +648,9 @@ add_library(ssl ${SSL_SOURCES})
  set_property(TARGET ssl PROPERTY EXPORT_NAME SSL)
  target_link_libraries(ssl crypto)
  
@@ -20,18 +20,14 @@ index 06ce07e95..c34d6d24a 100644
  if(APPLE)
    set(PKI_CXX_FLAGS "-fno-aligned-new")
  endif()
-@@ -670,9 +670,6 @@ target_link_libraries(decrepit ssl crypto)
- if(APPLE)
-   set(PKI_CXX_FLAGS "-fno-aligned-new")
- endif()
 -add_library(pki ${PKI_SOURCES})
 -target_link_libraries(pki crypto)
 -target_compile_options(pki PRIVATE ${PKI_CXX_FLAGS})
  
  if(BUILD_TESTING)
    add_library(test_support_lib STATIC
-@@ -720,9 +716,6 @@ if(FIPS)
-   target_link_libraries(modulewrapper crypto)
+@@ -710,9 +703,6 @@ if(FIPS)
+   target_link_libraries(entropy_modulewrapper crypto)
  endif()
  
 -add_executable(bssl ${BSSL_SOURCES})
@@ -40,18 +36,19 @@ index 06ce07e95..c34d6d24a 100644
  if(FUZZ)
    if(LIBFUZZER_FROM_DEPS)
      file(GLOB LIBFUZZER_SOURCES "util/bot/libFuzzer/*.cpp")
-@@ -812,7 +805,6 @@ endif()
+@@ -798,7 +788,6 @@ endif()
  
  if(INSTALL_ENABLED)
    install(TARGETS crypto ssl EXPORT OpenSSLTargets)
 -  install(TARGETS bssl)
    install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
    install(EXPORT OpenSSLTargets
-           FILE OpenSSLTargets.cmakediff --git a/gen/sources.cmake b/gen/sources.cmake
-index 00ac47eec..b80e28aae 100644
+           FILE OpenSSLTargets.cmake
+diff --git a/gen/sources.cmake b/gen/sources.cmake
+index 32895a856..6ff8260a4 100644
 --- a/gen/sources.cmake
 +++ b/gen/sources.cmake
-@@ -242,35 +242,6 @@ set(
+@@ -244,35 +244,6 @@ set(
    gen/bcm/x86_64-mont5-win.asm
  )
  
@@ -87,7 +84,7 @@ index 00ac47eec..b80e28aae 100644
  set(
    CRYPTO_SOURCES
  
-@@ -734,425 +705,6 @@ set(
+@@ -736,442 +707,6 @@ set(
    gen/crypto/md5-x86_64-win.asm
  )
  
@@ -131,6 +128,7 @@ index 00ac47eec..b80e28aae 100644
 -  crypto/fipsmodule/ec/p256-nistz_test.cc
 -  crypto/fipsmodule/ec/p256_test.cc
 -  crypto/fipsmodule/ecdsa/ecdsa_test.cc
+-  crypto/fipsmodule/entropy/jitter_test.cc
 -  crypto/fipsmodule/hkdf/hkdf_test.cc
 -  crypto/fipsmodule/keccak/keccak_test.cc
 -  crypto/fipsmodule/rand/ctrdrbg_test.cc
@@ -212,8 +210,13 @@ index 00ac47eec..b80e28aae 100644
 -  crypto/cipher/test/xchacha20_poly1305_tests.txt
 -  crypto/curve25519/ed25519_tests.txt
 -  crypto/ecdh/ecdh_tests.txt
--  crypto/evp/evp_tests.txt
--  crypto/evp/scrypt_tests.txt
+-  crypto/evp/test/dh_tests.txt
+-  crypto/evp/test/ec_tests.txt
+-  crypto/evp/test/ed25519_tests.txt
+-  crypto/evp/test/evp_tests.txt
+-  crypto/evp/test/rsa_tests.txt
+-  crypto/evp/test/scrypt_tests.txt
+-  crypto/evp/test/x25519_tests.txt
 -  crypto/fipsmodule/aes/aes_tests.txt
 -  crypto/fipsmodule/bn/test/exp_tests.txt
 -  crypto/fipsmodule/bn/test/gcd_tests.txt
@@ -369,6 +372,7 @@ index 00ac47eec..b80e28aae 100644
 -  crypto/x509/test/pss_sha256_wrong_trailer.pem
 -  crypto/x509/test/pss_sha384.pem
 -  crypto/x509/test/pss_sha512.pem
+-  crypto/x509/test/rsa_pss_sha256_key.pk8
 -  crypto/x509/test/some_names1.pem
 -  crypto/x509/test/some_names2.pem
 -  crypto/x509/test/some_names3.pem
@@ -379,6 +383,16 @@ index 00ac47eec..b80e28aae 100644
 -  crypto/x509/test/trailing_data_leaf_name_constraints.pem
 -  crypto/x509/test/trailing_data_leaf_subject_alt_name.pem
 -  crypto/x509/test/trailing_data_leaf_subject_key_identifier.pem
+-  crypto/x509/test/unusual_tbs_critical_ber.pem
+-  crypto/x509/test/unusual_tbs_critical_false_not_omitted.pem
+-  crypto/x509/test/unusual_tbs_empty_extension_not_omitted.pem
+-  crypto/x509/test/unusual_tbs_key.pem
+-  crypto/x509/test/unusual_tbs_null_sigalg_param.pem
+-  crypto/x509/test/unusual_tbs_uid_both.pem
+-  crypto/x509/test/unusual_tbs_uid_issuer.pem
+-  crypto/x509/test/unusual_tbs_uid_subject.pem
+-  crypto/x509/test/unusual_tbs_v1_not_omitted.pem
+-  crypto/x509/test/unusual_tbs_wrong_attribute_order.pem
 -  third_party/wycheproof_testvectors/aes_cbc_pkcs5_test.txt
 -  third_party/wycheproof_testvectors/aes_cmac_test.txt
 -  third_party/wycheproof_testvectors/aes_eax_test.txt
@@ -511,9 +525,9 @@ index 00ac47eec..b80e28aae 100644
 -)
 -
  set(
-   FUZZ_SOURCES
+   ENTROPY_MODULEWRAPPER_SOURCES
  
-@@ -1205,1617 +757,6 @@ set(
+@@ -1239,1617 +774,6 @@ set(
    util/fipstools/acvp/modulewrapper/modulewrapper.h
  )
  
@@ -2131,7 +2145,7 @@ index 00ac47eec..b80e28aae 100644
  set(
    SSL_SOURCES
  
-@@ -2874,72 +815,3 @@ set(
+@@ -2908,74 +832,3 @@ set(
  
    ssl/internal.h
  )
@@ -2150,6 +2164,7 @@ index 00ac47eec..b80e28aae 100644
 -  TEST_SUPPORT_SOURCES
 -
 -  crypto/test/abi_test.cc
+-  crypto/test/der_trailing_data.cc
 -  crypto/test/file_test.cc
 -  crypto/test/file_test_gtest.cc
 -  crypto/test/file_util.cc
@@ -2162,6 +2177,7 @@ index 00ac47eec..b80e28aae 100644
 -  TEST_SUPPORT_INTERNAL_HEADERS
 -
 -  crypto/test/abi_test.h
+-  crypto/test/der_trailing_data.h
 -  crypto/test/file_test.h
 -  crypto/test/file_util.h
 -  crypto/test/gtest_main.h

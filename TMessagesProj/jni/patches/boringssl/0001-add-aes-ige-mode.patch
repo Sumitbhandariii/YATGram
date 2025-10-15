@@ -1,8 +1,8 @@
 diff --git a/gen/sources.cmake b/gen/sources.cmake
-index df53126ed..a1d329d79 100644
+index 32895a856..17058f602 100644
 --- a/gen/sources.cmake
 +++ b/gen/sources.cmake
-@@ -2819,6 +2819,7 @@ set(
+@@ -2853,6 +2853,7 @@ set(
  set(
    SSL_SOURCES
  
@@ -29,10 +29,10 @@ index eee88a510..18735da3a 100644
  #if defined(__cplusplus)
  }  // extern C
 diff --git a/include/openssl/base.h b/include/openssl/base.h
-index 95cc15df1..5ba46e143 100644
+index ae422d51c..2baef41e5 100644
 --- a/include/openssl/base.h
 +++ b/include/openssl/base.h
-@@ -549,4 +549,6 @@ BSSL_NAMESPACE_END
+@@ -550,4 +550,6 @@ BSSL_NAMESPACE_END
  
  #endif  // !BORINGSSL_NO_CXX
  

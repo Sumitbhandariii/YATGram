@@ -1316,6 +1316,7 @@
     <string name="RemindDayAt">\'Recordar el\' d \'de\' MMM \'a las\' HH:mm</string>
     <string name="RemindDayYearAt">\'Recordar el\' d \'de\' MMM \'de\' yyyy \'a las\' HH:mm</string>
     <string name="BotsMenuTitle">Menu</string>
+    <string name="Understood">👍 Entendido</string>
     <!--FORK CLIENT-->
     <string name="FastForward">Reenviar Rápido</string>
     <string name="ForwardAsAlbum">Reenviar como álbum</string>
@@ -1376,5 +1377,4 @@
     <string name="DisableSlideToNextChannel">Desactivar deslizar al siguiente canal</string>
     <string name="DisableRecentFilesAttachment">Desactivar archivos recientes</string>
     <string name="SmsOnlyOfficialWarning">Nota: La verificación por SMS está limitada SOLO a aplicaciones móviles oficiales</string>
-
 </resources>

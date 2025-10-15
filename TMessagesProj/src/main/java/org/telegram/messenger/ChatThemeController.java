@@ -54,7 +54,7 @@ public class ChatThemeController extends BaseController {
     private static class ThemeList {
         private List<EmojiThemes> themes;
         private long hash;
-        private int offset;
+        private String offset;
         private long lastReloadTimeMs;
         private boolean completed;
     }
@@ -988,7 +988,7 @@ public class ChatThemeController extends BaseController {
                         } else {
                             giftsThemeList.themes.addAll(chatThemes);
                         }
-                        if (t.next_offset == 0) {
+                        if (TextUtils.isEmpty(t.next_offset)) {
                             giftsThemeList.completed = true;
                         }
 
