@@ -177,6 +177,7 @@ public class ForkSettingsActivity extends BaseFragment {
     private int hideFloatingButton;
     private int chooseUnifiedPush;
     // end YATGram
+    private int hideStoriesInArchiveRow;
 
     private int stickerSizeRow;
 
@@ -228,6 +229,7 @@ public class ForkSettingsActivity extends BaseFragment {
         syncPinsRow = rowCount++;
         unmutedOnTopRow = rowCount++;
         openArchiveOnPull = rowCount++;
+        hideStoriesInArchiveRow = rowCount++;
         disableThumbsInDialogList = rowCount++;
         disableGlobalSearch = rowCount++;
         customTitleRow = rowCount++;
@@ -415,6 +417,8 @@ public class ForkSettingsActivity extends BaseFragment {
                 toggleGlobalMainSetting("mentionByName", view, false);
             } else if (position == openArchiveOnPull) {
                 toggleGlobalMainSetting("openArchiveOnPull", view, false);
+            } else if (position == hideStoriesInArchiveRow) {
+                toggleGlobalMainSetting("hideStoriesInArchive", view, false);
             } else if (position == disableFlipPhotos) {
                 toggleGlobalMainSetting("disableFlipPhotos", view, false);
             } else if (position == formatWithSeconds) {
@@ -592,6 +596,9 @@ public class ForkSettingsActivity extends BaseFragment {
                     } else if (position == openArchiveOnPull) {
                         String t = LocaleController.getString("OpenArchiveOnPull", R.string.OpenArchiveOnPull);
                         textCell.setTextAndCheck(t, preferences.getBoolean("openArchiveOnPull", true), false);
+                    } else if (position == hideStoriesInArchiveRow) {
+                        String t = LocaleController.getString("HideStoriesInArchive", R.string.HideStoriesInArchive);
+                        textCell.setTextAndCheck(t, preferences.getBoolean("hideStoriesInArchive", false), false);
                     } else if (position == disableFlipPhotos) {
                         String t = LocaleController.getString("DisableFlipPhotos", R.string.DisableFlipPhotos);
                         textCell.setTextAndCheck(t, preferences.getBoolean("disableFlipPhotos", false), false);
@@ -659,6 +666,7 @@ public class ForkSettingsActivity extends BaseFragment {
                         || position == replaceForward
                         || position == mentionByName
                         || position == openArchiveOnPull
+                        || position == hideStoriesInArchiveRow
                         || position == disableFlipPhotos
                         || position == formatWithSeconds
                         || position == disableThumbsInDialogList
@@ -734,6 +742,7 @@ public class ForkSettingsActivity extends BaseFragment {
                 || position == replaceForward
                 || position == mentionByName
                 || position == openArchiveOnPull
+                || position == hideStoriesInArchiveRow
                 || position == disableFlipPhotos
                 || position == formatWithSeconds
                 || position == disableThumbsInDialogList
