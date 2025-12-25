@@ -20,7 +20,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -31,14 +30,12 @@ import android.os.Handler;
 import android.os.PowerManager;
 import android.os.SystemClock;
 import android.telephony.TelephonyManager;
-import android.util.Pair;
 import android.view.ViewGroup;
 
 import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.multidex.MultiDex;
 
 import org.json.JSONObject;
 import org.telegram.messenger.voip.VideoCapturerDevice;
@@ -47,7 +44,6 @@ import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.Adapters.DrawerLayoutAdapter;
 import org.telegram.ui.Components.ForegroundDetector;
-import org.telegram.ui.Components.Premium.boosts.BoostRepository;
 import org.telegram.ui.IUpdateButton;
 import org.telegram.ui.IUpdateLayout;
 import org.telegram.ui.LauncherIconController;
@@ -88,7 +84,6 @@ public class ApplicationLoader extends Application {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        MultiDex.install(this);
     }
 
     public static PushListenerController.IPushListenerServiceProvider getPushProvider() {
