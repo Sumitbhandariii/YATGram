@@ -111,6 +111,7 @@ public class HeaderCell extends FrameLayout {
         ViewCompat.setAccessibilityHeading(this, true);
     }
 
+    // YATGram
     public HeaderCell setBigTitle(boolean enabled) {
         if (enabled) {
             textView.setTypeface(AndroidUtilities.getTypeface("fonts/mw_bold.ttf"));
@@ -118,6 +119,14 @@ public class HeaderCell extends FrameLayout {
             textView.setTypeface(AndroidUtilities.getTypeface("fonts/rmedium.ttf"));
         }
         return this;
+    }
+
+    public void setOnWidthUpdateListener(Runnable listener) {
+        animatedTextView.setOnWidthUpdatedListener(listener);
+    }
+
+    public float getAnimatedWidth() {
+        return animatedTextView.getDrawable().getCurrentWidth();
     }
 
     public void setHeight(int value) {

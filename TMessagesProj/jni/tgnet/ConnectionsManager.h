@@ -48,6 +48,7 @@ public:
     int32_t getCurrentTime();
     int32_t getCurrentPingTime();
     uint32_t getCurrentDatacenterId();
+    int64_t getCurrentAuthKeyId();
     bool isTestBackend();
     int32_t getTimeDifference();
     int32_t sendRequest(TLObject *object, onCompleteFunc onComplete, onQuickAckFunc onQuickAck, onRequestClearFunc onClear, uint32_t flags, uint32_t datacenterId, ConnectionType connectionType, bool immediate);

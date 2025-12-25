@@ -2818,9 +2818,9 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
                 if (media == null) {
                     media = new TLRPC.TL_messageMediaEmpty();
                 }
-                SerializedData serializedDataCalc = new SerializedData(true);
+                final SerializedData serializedDataCalc = new SerializedData(true);
                 writePreviousMessageData(newMsg, serializedDataCalc);
-                SerializedData prevMessageData = new SerializedData(serializedDataCalc.length());
+                final SerializedData prevMessageData = new SerializedData(serializedDataCalc.length());
                 writePreviousMessageData(newMsg, prevMessageData);
                 if (params == null) {
                     params = new HashMap<>();
@@ -3140,6 +3140,10 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
                 if (messageObject.scheduled) {
                     request.schedule_date = messageObject.messageOwner.date;
                     request.flags |= 32768;
+                    if (messageObject.messageOwner.schedule_repeat_period != 0) {
+                        request.schedule_repeat_period = messageObject.messageOwner.schedule_repeat_period;
+                        request.flags |= TLObject.FLAG_18;
+                    }
                 }
                 if ((messageObject.messageOwner.flags & 1073741824) != 0) {
                     request.quick_reply_shortcut_id = messageObject.messageOwner.quick_reply_shortcut_id;
@@ -3381,7 +3385,7 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
     public Boolean getSendingTodoValue(final MessageObject messageObject, final TLRPC.TodoItem task) {
         return waitingForTodoUpdate.get(Objects.hash(messageObject.getDialogId(), messageObject.getId(), task.id));
     }
-    public int toggleTodo(final MessageObject messageObject, final TLRPC.TodoItem task, final boolean enabled, final Runnable finishRunnable) {
+    public int toggleTodo(final long send_as, final MessageObject messageObject, final TLRPC.TodoItem task, final boolean enabled, final Runnable finishRunnable) {
         if (messageObject == null) {
             return 0;
         }
@@ -3391,7 +3395,7 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
 //            return 0;
 //        }
         waitingForTodoUpdate.put(hash, enabled);
-        TLRPC.TL_messages_toggleTodoCompleted req = new TLRPC.TL_messages_toggleTodoCompleted();
+        final TLRPC.TL_messages_toggleTodoCompleted req = new TLRPC.TL_messages_toggleTodoCompleted();
         req.msg_id = messageObject.getId();
         req.peer = getMessagesController().getInputPeer(messageObject.getDialogId());
         if (enabled) {
@@ -3401,7 +3405,7 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
         }
         return getConnectionsManager().sendRequest(req, (response, error) -> {
             if (error == null) {
-                getMessagesStorage().toggleTodo(messageObject.getDialogId(), messageObject.getId(), task.id, enabled);
+                getMessagesStorage().toggleTodo(messageObject.getDialogId(), messageObject.getId(), task.id, enabled, send_as);
                 getMessagesController().processUpdates((TLRPC.Updates) response, false);
             }
             AndroidUtilities.runOnUIThread(() -> {
@@ -8628,7 +8632,7 @@ public class SendMessagesHelper extends BaseController implements NotificationCe
             sendingMedia.geo = new TLRPC.TL_geoPoint();
             sendingMedia.geo.lat = location.getLatitude();
             sendingMedia.geo._long = location.getLongitude();
-            accountInstance.getSendMessagesHelper().sendMessage(SendMessagesHelper.SendMessageParams.of(sendingMedia, dialog_id, null, null, null, null, true, 0));
+            accountInstance.getSendMessagesHelper().sendMessage(SendMessagesHelper.SendMessageParams.of(sendingMedia, dialog_id, null, null, null, null, true, 0, 0));
         })));
     }
 

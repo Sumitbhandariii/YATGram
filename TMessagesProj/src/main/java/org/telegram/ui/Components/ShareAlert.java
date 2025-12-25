@@ -1789,16 +1789,16 @@ public class ShareAlert extends BottomSheet implements NotificationCenter.Notifi
                 info.asAlbum = groupAnyItems;
                 info.noText = nonText;
                 info.asCopy = !nonText;
-
+   
                 final int account = currentAccount;
                 for (int a = 0; a < selectedDialogs.size(); a++) {
                     long key = selectedDialogs.keyAt(a);
                     TLRPC.TL_forumTopic keyTopic = selectedDialogTopics.get(selectedDialogs.valueAt(a));
-
+   
                     if (!info.replyTo) {
                         info.replyTo = (AsCopy.TakeReplyToDraft(key, keyTopic, account, false) != 0);
                     }
-
+   
                     final boolean hasComment = (frameLayout2.getTag() != null
                         && commentTextView.length() > 0);
                     final String maybeReplaceText = nonText
@@ -1807,6 +1807,12 @@ public class ShareAlert extends BottomSheet implements NotificationCenter.Notifi
                             : "")
                         : null;
                     if (hasComment && !nonText) {
+                        boolean isMonoForum = MessagesController.getInstance(account).isMonoForum(key);
+                        long monoForumPeerId = keyTopic != null && isMonoForum ? DialogObject.getPeerDialogId(keyTopic.from_id) : 0;
+                        MessageObject replyTopMsg = keyTopic != null && !isMonoForum ? new MessageObject(account, keyTopic.topicStartMessage, false, false) : null;
+                        if (replyTopMsg != null) {
+                            replyTopMsg.isTopicMainMessage = true;
+                        }
                         SendMessagesHelper.SendMessageParams params = SendMessagesHelper.SendMessageParams.of(
                             commentTextView.getText().toString(),
                             key,
@@ -1822,20 +1828,31 @@ public class ShareAlert extends BottomSheet implements NotificationCenter.Notifi
                             0,
                             null,
                             false);
+                        params.monoForumPeer = monoForumPeerId;
+                        SendMessagesHelper.getInstance(account).sendMessage(params);
                     }
                     if (groupAnyItems) {
+                        boolean isMonoForum = MessagesController.getInstance(account).isMonoForum(key);
+                        long monoForumPeerId = keyTopic != null && isMonoForum ? DialogObject.getPeerDialogId(keyTopic.from_id) : 0;
+                        int replyId = AsCopy.TakeReplyToDraft(key, keyTopic, account, true);
+                        if (replyId == 0 && keyTopic != null && !isMonoForum) {
+                            replyId = keyTopic.id;
+                        }
                         AsCopy.GroupItemsIntoAlbum(
                             key,
-                            AsCopy.TakeReplyToDraft(key, keyTopic, account, true),
+                            replyId,
                             maybeReplaceText,
                             sendingMessageObjects,
                             account,
                             parentFragment,
-                            notify);
+                            notify,
+                            monoForumPeerId);
                         onSend(selectedDialogs, selectedDialogs.size(), keyTopic, info);
                         dismiss();
                         return;
                     }
+                    boolean isMonoForum = MessagesController.getInstance(account).isMonoForum(key);
+                    long monoForumPeerId = keyTopic != null && isMonoForum ? DialogObject.getPeerDialogId(keyTopic.from_id) : 0;
                     AsCopy.PerformForwardFromMyName(
                         key,
                         keyTopic,
@@ -1843,7 +1860,8 @@ public class ShareAlert extends BottomSheet implements NotificationCenter.Notifi
                         sendingMessageObjects,
                         account,
                         parentFragment,
-                        notify);
+                        notify,
+                        monoForumPeerId);
                 }
                 onSend(selectedDialogs, selectedDialogs.size(), selectedDialogTopics.get(selectedDialogs.valueAt(0)), info);
             } else {
@@ -1854,7 +1872,7 @@ public class ShareAlert extends BottomSheet implements NotificationCenter.Notifi
             }
             dismiss();
         };
-
+   
         int factor = groupAnyItems ? 0 : 1;
         anonymButtonContainer = new FrameLayout(context);
         anonymButtonContainer.setVisibility(View.INVISIBLE);
@@ -1880,7 +1898,7 @@ public class ShareAlert extends BottomSheet implements NotificationCenter.Notifi
             performAsCopySend.accept(false, false);
             return true;
         });
-
+   
         anonymButtonContainer.addView(createButton(R.drawable.anon_forward, context), LayoutHelper.createFrame(Build.VERSION.SDK_INT >= 21 ? sizeButton : size, Build.VERSION.SDK_INT >= 21 ? sizeButton : size, Gravity.LEFT | Gravity.TOP, Build.VERSION.SDK_INT >= 21 ? 2 : 0, 0, 0, 0));
         
         // ANONYM FORWARD WITHOUT TEXT BUTTON.
@@ -2028,7 +2046,7 @@ public class ShareAlert extends BottomSheet implements NotificationCenter.Notifi
     protected void onShareStory(View cell) {
 
     }
-
+    
     private void showPremiumBlockedToast(View view, long dialogId) {
         AndroidUtilities.shakeViewSpring(view, shiftDp = -shiftDp);
         BotWebViewVibrationEffect.APP_ERROR.vibrate();
@@ -2700,9 +2718,12 @@ public class ShareAlert extends BottomSheet implements NotificationCenter.Notifi
         });
     }
 
-    protected void onSend(LongSparseArray<TLRPC.Dialog> dids, int count, TLRPC.TL_forumTopic topic, boolean showToast) { }
+    protected void onSend(LongSparseArray<TLRPC.Dialog> dids, int count, TLRPC.TL_forumTopic topic, UndoInfo info) {
+    }
 
-    protected void onSend(LongSparseArray<TLRPC.Dialog> dids, int count, TLRPC.TL_forumTopic topic, UndoInfo info) { }
+    protected void onSend(LongSparseArray<TLRPC.Dialog> dids, int count, TLRPC.TL_forumTopic topic, boolean showToast) {
+
+    }
 
     protected boolean doSend(LongSparseArray<TLRPC.Dialog> dids, TLRPC.TL_forumTopic topic) {
         return false;

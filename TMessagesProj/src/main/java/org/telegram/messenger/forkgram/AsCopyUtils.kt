@@ -63,13 +63,14 @@ fun PerformForwardFromMyName(
         sendingMessageObjects: ArrayList<MessageObject>,
         currentAccount: Int,
         parentFragment: BaseFragment?,
-        notify: Boolean) {
+        notify: Boolean,
+        monoForumPeerId: Long = 0L) {
 
     val queue = ArrayList<() -> Unit>();
     val saveOriginalCaptions = (text == null)
     var replaceText = text
     val reply = TakeReplyToDraft(key, keyTopic, currentAccount, false)
-    val topicId = if (keyTopic != null) keyTopic.id else 0;
+    val topicId = if (monoForumPeerId != 0L) 0 else (if (keyTopic != null) keyTopic.id else 0);
     val currentReplaceText = {
         val temp = replaceText;
         replaceText = "";
@@ -101,6 +102,7 @@ fun PerformForwardFromMyName(
                 parentFragment,
                 copyText,
                 notify,
+                monoForumPeerId,
                 deque)
         }
     }
@@ -122,7 +124,7 @@ fun PerformForwardFromMyName(
         val copyText = currentReplaceText();
         queue.add {
             val instance = SendMessagesHelper.getInstance(currentAccount);
-            instance.processForwardFromMyName(copyMsg, key, 0, 0, null, copyText, notify, topicId)
+            instance.processForwardFromMyName(copyMsg, key, 0, monoForumPeerId, null, copyText, notify, topicId)
             deque();
         }
     }
@@ -140,7 +142,8 @@ fun GroupItemsIntoAlbum(
         sendingMessageObjects: ArrayList<MessageObject>,
         currentAccount: Int,
         parentFragment: BaseFragment?,
-        notify: Boolean) {
+        notify: Boolean,
+        monoForumPeerId: Long = 0L) {
     if (sendingMessageObjects.isEmpty()) {
         return;
     }
@@ -153,7 +156,7 @@ fun GroupItemsIntoAlbum(
     val objectsToDelay = sub(objectsToSend.size, sendingMessageObjects.size);
 
     val finish = {
-        GroupItemsIntoAlbum(key, reply, text, objectsToDelay, currentAccount, parentFragment, notify)
+        GroupItemsIntoAlbum(key, reply, text, objectsToDelay, currentAccount, parentFragment, notify, monoForumPeerId)
     };
 
     SendItemsAsAlbum(
@@ -164,6 +167,7 @@ fun GroupItemsIntoAlbum(
             parentFragment,
             text,
             notify,
+            monoForumPeerId,
             finish)
 }
 
@@ -211,12 +215,13 @@ fun SendItemsAsAlbum(
         fragment: BaseFragment?,
         replaceText: String?,
         notify: Boolean,
+        monoForumPeerId: Long = 0L,
         finish: () -> Unit) {
     if (peer == 0L || messages.size > 10 || messages.isEmpty()) {
         return
     }
     val accountInstance = AccountInstance.getInstance(currentAccount)
-    val lower_id = peer
+    val lower_id = if (monoForumPeerId != 0L) monoForumPeerId else peer
     val sendToPeer: InputPeer = 
         (if (lower_id != 0L) accountInstance.messagesController.getInputPeer(lower_id)
             else null)
@@ -266,6 +271,8 @@ fun SendItemsAsAlbum(
             AndroidUtilities.runOnUIThread { finish(); }
             return@sendRequest
         }
+        if (error != null) {
+        }
         if (!FileRefController.isFileRefError(error.text)) {
             showToast("It seems that you want to group incompatible file types.");
             AndroidUtilities.runOnUIThread {
@@ -304,7 +311,7 @@ fun SendItemsAsAlbum(
                 showToast("Sorry, something went wrong.");
                 return@handleMessages
             }
-            SendItemsAsAlbum(currentAccount, messages, peer, reply, fragment, replaceText, notify, finish)
+            SendItemsAsAlbum(currentAccount, messages, peer, reply, fragment, replaceText, notify, monoForumPeerId, finish)
         }
 
         ForkApi.TLRPCMessages(currentAccount, messages, handleMessages);

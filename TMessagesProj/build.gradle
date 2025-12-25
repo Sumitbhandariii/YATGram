@@ -50,6 +50,10 @@ dependencies {
 
     implementation 'org.apache.commons:commons-lang3:3.13.0'
 
+    implementation 'co.nstant.in:cbor:0.8'
+    implementation "androidx.credentials:credentials:1.6.0-alpha04"
+    implementation "androidx.credentials:credentials-play-services-auth:1.6.0-alpha04"
+
 //    implementation 'com.google.mlkit:translate:17.0.3'
 
     constraints {

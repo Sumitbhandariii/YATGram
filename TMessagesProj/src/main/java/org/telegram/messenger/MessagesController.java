@@ -58,6 +58,7 @@ import org.telegram.SQLite.SQLitePreparedStatement;
 import org.telegram.messenger.browser.Browser;
 import org.telegram.messenger.support.LongSparseIntArray;
 import org.telegram.messenger.support.LongSparseLongArray;
+import org.telegram.messenger.utils.tlutils.AmountUtils;
 import org.telegram.messenger.voip.GroupCallMessagesController;
 import org.telegram.messenger.voip.VoIPDebugToSend;
 import org.telegram.messenger.voip.VoIPPreNotificationService;
@@ -5557,7 +5558,7 @@ public class MessagesController extends BaseController implements NotificationCe
                 getNotificationCenter().postNotificationName(NotificationCenter.newSuggestionsAvailable);
             } else if (pendingSuggestions.remove(suggestion) || !dismissedSuggestions.contains(suggestion)) {
                 dismissedSuggestions.add(suggestion);
-                SharedPreferences.Editor editor = mainPreferences.edit();
+                final SharedPreferences.Editor editor = mainPreferences.edit();
                 editor.putStringSet("pendingSuggestions", pendingSuggestions);
                 editor.putStringSet("dismissedSuggestions", dismissedSuggestions);
                 editor.commit();
@@ -23547,9 +23548,9 @@ public class MessagesController extends BaseController implements NotificationCe
             return EMAIL_SUGGESTION_FALSE;
         }
 
-        if (lastCheckPromoInfoTime + 10 < getConnectionsManager().getCurrentTime()) {
+        /*if (lastCheckPromoInfoTime + 10 < getConnectionsManager().getCurrentTime()) {
             return EMAIL_SUGGESTION_FALSE;
-        }
+        }*/
 
         final boolean needSetupEmail = pendingSuggestions.contains("SETUP_LOGIN_EMAIL");
         final boolean needSetupEmailNoSkip = pendingSuggestions.contains("SETUP_LOGIN_EMAIL_NOSKIP");
