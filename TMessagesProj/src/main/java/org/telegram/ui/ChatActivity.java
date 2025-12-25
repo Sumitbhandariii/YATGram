@@ -8044,6 +8044,7 @@ public class ChatActivity extends BaseFragment implements
 
         actionsButtonsLayout = new ChatActivityActionsButtonsLayout(context, resourceProvider, blurredBackgroundColorProvider, glassBackgroundDrawableFactory);
         actionsButtonsLayout.setForwardButtonOnClickListener(v -> openForward(false));
+        actionsButtonsLayout.setGroupMediaButtonOnClickListener(v -> showAnonymShareAlert(true));
         actionsButtonsLayout.setReplyButtonOnClickListener(v -> {
             MessageObject messageObject = null;
             for (int a = 1; a >= 0; a--) {
@@ -19065,6 +19066,7 @@ public class ChatActivity extends BaseFragment implements
                     if (newVisibility == View.VISIBLE) {
                         groupButtonVisibility = View.GONE;
                     }
+                    actionsButtonsLayout.setGroupMediaButtonEnabled(groupButtonVisibility == View.VISIBLE);
                     actionsButtonsLayout.showReplyButton(newVisibility == View.VISIBLE, true);
                 }
 
@@ -44178,6 +44180,9 @@ public class ChatActivity extends BaseFragment implements
                     items.add(LocaleController.getString(R.string.Forward));
                     options.add(OPTION_FORWARD);
                     icons.add(R.drawable.msg_forward);
+                    items.add(LocaleController.getString("FastForward", R.string.FastForward));
+                    options.add(202);
+                    icons.add(R.drawable.ic_ab_forward_anonym);
                 }
                 if (allowUnpin) {
                     items.add(LocaleController.getString(R.string.UnpinMessage));

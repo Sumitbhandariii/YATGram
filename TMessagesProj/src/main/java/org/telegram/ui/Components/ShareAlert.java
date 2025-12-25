@@ -2020,26 +2020,17 @@ public class ShareAlert extends BottomSheet implements NotificationCenter.Notifi
     private ImageView createButton(int resId, Context context) {
         ImageView writeButton = new ImageView(context);
         Drawable drawable = Theme.createSimpleSelectorCircleDrawable(AndroidUtilities.dp(sizeButton), Theme.getColor(Theme.key_dialogFloatingButton), Theme.getColor(Theme.key_dialogFloatingButtonPressed));
-        if (Build.VERSION.SDK_INT < 21) {
-            Drawable shadowDrawable = context.getResources().getDrawable(R.drawable.floating_shadow_profile).mutate();
-            shadowDrawable.setColorFilter(new PorterDuffColorFilter(0xff000000, PorterDuff.Mode.MULTIPLY));
-            CombinedDrawable combinedDrawable = new CombinedDrawable(shadowDrawable, drawable, 0, 0);
-            combinedDrawable.setIconSize(AndroidUtilities.dp(sizeButton), AndroidUtilities.dp(sizeButton));
-            drawable = combinedDrawable;
-        }
         writeButton.setBackgroundDrawable(drawable);
         writeButton.setImageResource(resId);
         writeButton.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_dialogFloatingIcon), PorterDuff.Mode.MULTIPLY));
         writeButton.setScaleType(ImageView.ScaleType.CENTER);
-        if (Build.VERSION.SDK_INT >= 21) {
-            writeButton.setOutlineProvider(new android.view.ViewOutlineProvider() {
-                @SuppressLint("NewApi")
-                @Override
-                public void getOutline(View view, android.graphics.Outline outline) {
-                    outline.setOval(0, 0, AndroidUtilities.dp(sizeButton), AndroidUtilities.dp(sizeButton));
-                }
-            });
-        }
+        writeButton.setOutlineProvider(new android.view.ViewOutlineProvider() {
+            @SuppressLint("NewApi")
+            @Override
+            public void getOutline(View view, android.graphics.Outline outline) {
+                outline.setOval(0, 0, AndroidUtilities.dp(sizeButton), AndroidUtilities.dp(sizeButton));
+            }
+        });
         return writeButton;
     }
 
