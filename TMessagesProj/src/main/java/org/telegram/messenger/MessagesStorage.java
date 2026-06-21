@@ -2492,11 +2492,13 @@ public class MessagesStorage extends BaseController {
 
                 boolean updateCounters = false;
                 boolean hasDefaultFilter = false;
+                int filterCount = 0;
+                
                 while (filtersCursor.next()) {
                     MessagesController.DialogFilter filter = new MessagesController.DialogFilter();
                     filter.id = filtersCursor.intValue(0);
                     filter.order = filtersCursor.intValue(1);
-                    filter.pendingUnreadCount = filter.unreadCount = -1;//filtersCursor.intValue(2);
+                    filter.pendingUnreadCount = filter.unreadCount = -1;
                     filter.flags = filtersCursor.intValue(3);
                     filter.name = filtersCursor.stringValue(4);
                     filter.color = filtersCursor.intValue(5);
@@ -2510,6 +2512,8 @@ public class MessagesStorage extends BaseController {
                     dialogFilters.add(filter);
                     dialogFiltersMap.put(filter.id, filter);
                     filtersById.put(filter.id, filter);
+                    filterCount++;
+                    
                     if (filter.pendingUnreadCount < 0) {
                         updateCounters = true;
                     }
@@ -2562,6 +2566,15 @@ public class MessagesStorage extends BaseController {
                 }
                 filtersCursor.dispose();
                 filtersCursor = null;
+
+                // Check if this is first run and create bootstrap filters
+                boolean defaultFiltersCreated = getUserConfig().getPreferences().getBoolean("defaultFiltersCreated_" + currentAccount, false);
+                if (!defaultFiltersCreated && filterCount == 1) { // Only default filter (id=0) exists
+                    createBootstrapDialogFilters();
+                    // Reload filters from database after bootstrap creation
+                    storageQueue.postRunnable(this::loadDialogFilters);
+                    return;
+                }
 
                 if (!hasDefaultFilter) {
                     MessagesController.DialogFilter filter = new MessagesController.DialogFilter();
@@ -2639,6 +2652,74 @@ public class MessagesStorage extends BaseController {
                 }
             }
         });
+    }
+
+    private void createBootstrapDialogFilters() {
+        // Create 5 default dialog filters for new users
+        
+        // 1. Personal - Contacts & Users
+        MessagesController.DialogFilter personalFilter = createDefaultDialogFilter(
+            "Personal",
+            MessagesController.DIALOG_FILTER_FLAG_CONTACTS | MessagesController.DIALOG_FILTER_FLAG_NON_CONTACTS,
+            1
+        );
+        
+        // 2. Bots - Bots only
+        MessagesController.DialogFilter botsFilter = createDefaultDialogFilter(
+            "Bots",
+            MessagesController.DIALOG_FILTER_FLAG_BOTS,
+            2
+        );
+        
+        // 3. Groups - Groups only
+        MessagesController.DialogFilter groupsFilter = createDefaultDialogFilter(
+            "Groups",
+            MessagesController.DIALOG_FILTER_FLAG_GROUPS,
+            3
+        );
+        
+        // 4. Channels - Broadcasts/Channels only
+        MessagesController.DialogFilter channelsFilter = createDefaultDialogFilter(
+            "Channels",
+            MessagesController.DIALOG_FILTER_FLAG_CHANNELS,
+            4
+        );
+        
+        // 5. Unread - Unread messages only (all chat types but exclude read)
+        MessagesController.DialogFilter unreadFilter = createDefaultDialogFilter(
+            "Unread",
+            MessagesController.DIALOG_FILTER_FLAG_ALL_CHATS | MessagesController.DIALOG_FILTER_FLAG_EXCLUDE_READ,
+            5
+        );
+        
+        // Increase order of default filter to place it after new filters
+        MessagesController.DialogFilter defaultFilter = dialogFiltersMap.get(0);
+        if (defaultFilter != null) {
+            defaultFilter.order = 6;
+            saveDialogFilterInternal(defaultFilter, false, false);
+        }
+        
+        // Save all new filters to database
+        storageQueue.postRunnable(() -> {
+            try {
+                database.beginTransaction();
+                
+                saveDialogFilterInternal(personalFilter, false, false);
+                saveDialogFilterInternal(botsFilter, false, false);
+                saveDialogFilterInternal(groupsFilter, false, false);
+                saveDialogFilterInternal(channelsFilter, false, false);
+                saveDialogFilterInternal(unreadFilter, false, false);
+                
+                database.commitTransaction();
+            } catch (Exception e) {
+                checkSQLException(e);
+            }
+        });
+        
+        // Mark that bootstrap filters have been created
+        SharedPreferences.Editor editor = getUserConfig().getPreferences().edit();
+        editor.putBoolean("defaultFiltersCreated_" + currentAccount, true);
+        editor.apply();
     }
 
     private int[][] contacts = new int[][]{new int[2], new int[2]};
