@@ -51,6 +51,7 @@ public class UserConfig extends BaseController {
     public long migrateOffsetChannelId = -1;
     public long migrateOffsetAccess = -1;
     public boolean filtersLoaded;
+    public boolean defaultDialogFiltersCreated;
 
     public int sharingMyLocationUntil;
     public int lastMyLocationShareTime;
@@ -165,6 +166,7 @@ public class UserConfig extends BaseController {
                     editor.putInt("sharingMyLocationUntil", sharingMyLocationUntil);
                     editor.putInt("lastMyLocationShareTime", lastMyLocationShareTime);
                     editor.putBoolean("filtersLoaded", filtersLoaded);
+                    editor.putBoolean("defaultDialogFiltersCreated", defaultDialogFiltersCreated);
                     editor.putString("premiumGiftsStickerPack", premiumGiftsStickerPack);
                     editor.putLong("lastUpdatedPremiumGiftsStickerPack", lastUpdatedPremiumGiftsStickerPack);
 
@@ -315,6 +317,7 @@ public class UserConfig extends BaseController {
             sharingMyLocationUntil = preferences.getInt("sharingMyLocationUntil", 0);
             lastMyLocationShareTime = preferences.getInt("lastMyLocationShareTime", 0);
             filtersLoaded = preferences.getBoolean("filtersLoaded", false);
+            defaultDialogFiltersCreated = preferences.getBoolean("defaultDialogFiltersCreated", false);
             premiumGiftsStickerPack = preferences.getString("premiumGiftsStickerPack", null);
             lastUpdatedPremiumGiftsStickerPack = preferences.getLong("lastUpdatedPremiumGiftsStickerPack", 0);
 
@@ -481,6 +484,7 @@ public class UserConfig extends BaseController {
         hasValidDialogLoadIds = true;
         unacceptedTermsOfService = null;
         filtersLoaded = false;
+        defaultDialogFiltersCreated = false;
         hasSecureData = false;
         loginTime = (int) (System.currentTimeMillis() / 1000);
         lastContactsSyncTime = (int) (System.currentTimeMillis() / 1000) - 23 * 60 * 60;

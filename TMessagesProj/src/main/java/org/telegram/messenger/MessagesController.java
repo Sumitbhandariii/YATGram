@@ -22592,6 +22592,10 @@ public class MessagesController extends BaseController implements NotificationCe
         mainPreferences.edit().putBoolean("folderTags", folderTags = value).apply();
     }
 
+    public void setFiltersEnabled(boolean value) {
+        mainPreferences.edit().putBoolean("filtersEnabled", filtersEnabled = value).apply();
+    }
+
     public boolean isStoryQualityFullOnAccount() {
         return getUserConfig().isPremium() && storyQualityFull;
     }

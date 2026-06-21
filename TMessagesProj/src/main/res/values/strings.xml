@@ -2933,6 +2933,7 @@
     <string name="FilterMuteAll">Mute All</string>
     <string name="FilterUnmuteAll">Unmute All</string>
     <string name="FilterContacts">Contacts</string>
+    <string name="FilterPersonal">Personal</string>
     <string name="FilterNonContacts">Non Contacts</string>
     <string name="FilterGroups">Groups</string>
     <string name="FilterChannels">Channels</string>

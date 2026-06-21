@@ -3139,6 +3139,52 @@ public class MessagesStorage extends BaseController {
         }
     }
 
+    private int getNextDialogFilterId() {
+        int id = 2;
+        while (dialogFiltersMap.get(id) != null) {
+            id++;
+        }
+        return id;
+    }
+
+    private MessagesController.DialogFilter createDefaultDialogFilter(String name, int flags, int order) {
+        MessagesController.DialogFilter filter = new MessagesController.DialogFilter();
+        filter.id = getNextDialogFilterId();
+        filter.order = order;
+        filter.flags = flags;
+        filter.name = name;
+        filter.color = -1;
+        filter.entities = new ArrayList<>();
+        return filter;
+    }
+
+    private void sendDialogFilterToServer(MessagesController.DialogFilter filter) {
+        TLRPC.TL_messages_updateDialogFilter req = new TLRPC.TL_messages_updateDialogFilter();
+        req.id = filter.id;
+        req.flags |= 1;
+        req.filter = new TLRPC.TL_dialogFilter();
+        req.filter.contacts = (filter.flags & MessagesController.DIALOG_FILTER_FLAG_CONTACTS) != 0;
+        req.filter.non_contacts = (filter.flags & MessagesController.DIALOG_FILTER_FLAG_NON_CONTACTS) != 0;
+        req.filter.groups = (filter.flags & MessagesController.DIALOG_FILTER_FLAG_GROUPS) != 0;
+        req.filter.broadcasts = (filter.flags & MessagesController.DIALOG_FILTER_FLAG_CHANNELS) != 0;
+        req.filter.bots = (filter.flags & MessagesController.DIALOG_FILTER_FLAG_BOTS) != 0;
+        req.filter.exclude_muted = (filter.flags & MessagesController.DIALOG_FILTER_FLAG_EXCLUDE_MUTED) != 0;
+        req.filter.exclude_read = (filter.flags & MessagesController.DIALOG_FILTER_FLAG_EXCLUDE_READ) != 0;
+        req.filter.exclude_archived = (filter.flags & MessagesController.DIALOG_FILTER_FLAG_EXCLUDE_ARCHIVED) != 0;
+        req.filter.id = filter.id;
+        req.filter.title = new TLRPC.TL_textWithEntities();
+        req.filter.title.text = filter.name;
+        req.filter.title.entities = filter.entities;
+        req.filter.title_noanimate = filter.title_noanimate;
+        if (filter.color < 0) {
+            req.filter.color = 0;
+        } else {
+            req.filter.flags |= 134217728;
+            req.filter.color = filter.color;
+        }
+        getConnectionsManager().sendRequest(req, null);
+    }
+
     private ArrayList<Long> toPeerIds(ArrayList<TLRPC.InputPeer> inputPeers) {
         ArrayList<Long> array = new ArrayList<Long>();
         if (inputPeers == null) {
@@ -3181,6 +3227,39 @@ public class MessagesStorage extends BaseController {
                 ArrayList<MessagesController.DialogFilter> filtersToSave = new ArrayList<>();
                 HashMap<Integer, HashSet<Long>> filterDialogRemovals = new HashMap<>();
                 HashSet<Integer> filtersUnreadCounterReset = new HashSet<>();
+                boolean shouldBootstrapDefaultFolders = vector.isEmpty() && !getUserConfig().defaultDialogFiltersCreated && dialogFilters.size() == 1 && dialogFilters.get(0).isDefault();
+                if (vector.isEmpty()) {
+                    if (shouldBootstrapDefaultFolders) {
+                        int nextOrder = dialogFilters.get(0).order + 1;
+
+                        MessagesController.DialogFilter filter = createDefaultDialogFilter(LocaleController.getString(R.string.FilterGroups), MessagesController.DIALOG_FILTER_FLAG_GROUPS | MessagesController.DIALOG_FILTER_FLAG_EXCLUDE_ARCHIVED, nextOrder++);
+                        saveDialogFilterInternal(filter, false, true);
+                        sendDialogFilterToServer(filter);
+
+                        filter = createDefaultDialogFilter(LocaleController.getString(R.string.FilterPersonal), MessagesController.DIALOG_FILTER_FLAG_CONTACTS | MessagesController.DIALOG_FILTER_FLAG_NON_CONTACTS | MessagesController.DIALOG_FILTER_FLAG_EXCLUDE_ARCHIVED, nextOrder++);
+                        saveDialogFilterInternal(filter, false, true);
+                        sendDialogFilterToServer(filter);
+
+                        filter = createDefaultDialogFilter(LocaleController.getString(R.string.FilterChannels), MessagesController.DIALOG_FILTER_FLAG_CHANNELS | MessagesController.DIALOG_FILTER_FLAG_EXCLUDE_ARCHIVED, nextOrder++);
+                        saveDialogFilterInternal(filter, false, true);
+                        sendDialogFilterToServer(filter);
+
+                        filter = createDefaultDialogFilter(LocaleController.getString(R.string.FilterBots), MessagesController.DIALOG_FILTER_FLAG_BOTS | MessagesController.DIALOG_FILTER_FLAG_EXCLUDE_ARCHIVED, nextOrder);
+                        saveDialogFilterInternal(filter, false, true);
+                        sendDialogFilterToServer(filter);
+
+                        getMessagesController().setFiltersEnabled(true);
+                        getUserConfig().defaultDialogFiltersCreated = true;
+                        getUserConfig().saveConfig(false);
+                        calcUnreadCounters(true);
+                    }
+
+                    filtersToDelete.clear();
+                    filtersOrder.clear();
+                    for (int a = 0, N = dialogFilters.size(); a < N; a++) {
+                        filtersOrder.add(dialogFilters.get(a).id);
+                    }
+                }
                 for (int a = 0, N = vector.size(); a < N; a++) {
                     TLRPC.DialogFilter newFilter = (TLRPC.DialogFilter) vector.get(a);
                     filtersOrder.add(newFilter.id);
