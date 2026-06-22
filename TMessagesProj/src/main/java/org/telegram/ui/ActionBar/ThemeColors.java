@@ -111,7 +111,7 @@ public class ThemeColors {
         defaultColors[key_windowBackgroundWhiteInputField] = 0xffdbdbdb;
         defaultColors[key_windowBackgroundWhiteInputFieldActivated] = 0xff37a9f0;
         defaultColors[key_switchTrack] = 0xffb0b5ba;
-        defaultColors[key_switchTrackChecked] = 0xff52ade9;
+        defaultColors[key_switchTrackChecked] = 0xffffc107;
         defaultColors[key_switchTrackBlue] = 0xff828e99;
         defaultColors[key_switchTrackBlueChecked] = 0xff3c88c7;
         defaultColors[key_switchTrackBlueThumb] = 0xffffffff;
@@ -119,7 +119,7 @@ public class ThemeColors {
         defaultColors[key_switchTrackBlueSelector] = 0x17404a53;
         defaultColors[key_switchTrackBlueSelectorChecked] = 0x21024781;
         defaultColors[key_switch2Track] = 0xfff57e7e;
-        defaultColors[key_switch2TrackChecked] = 0xff52ade9;
+        defaultColors[key_switch2TrackChecked] = 0xffffc107;
         defaultColors[key_checkboxSquareBackground] = 0xff43a0df;
         defaultColors[key_checkboxSquareCheck] = 0xffffffff;
         defaultColors[key_checkboxSquareUnchecked] = 0xff737373;
@@ -182,16 +182,16 @@ public class ThemeColors {
         defaultColors[key_avatar_nameInMessageBlue] = 0xff368AD1;
         defaultColors[key_avatar_nameInMessagePink] = 0xffC7508B;
 
-        defaultColors[key_actionBarDefault] = 0xff527da3;
-        defaultColors[key_actionBarDefaultIcon] = 0xffffffff;
-        defaultColors[key_actionBarActionModeDefault] = 0xffffffff;
-        defaultColors[key_actionBarActionModeDefaultTop] = 0x10000000;
-        defaultColors[key_actionBarActionModeDefaultIcon] = 0xff676a6f;
-        defaultColors[key_actionBarDefaultTitle] = 0xffffffff;
-        defaultColors[key_actionBarDefaultSubtitle] = 0xffd5e8f7;
+        defaultColors[key_actionBarDefault] = 0xffffffff;
+        defaultColors[key_actionBarDefaultIcon] = 0xff527da3;
+        defaultColors[key_actionBarActionModeDefault] = 0xffffc107;
+        defaultColors[key_actionBarActionModeDefaultTop] = 0xff000000;
+        defaultColors[key_actionBarActionModeDefaultIcon] = 0xff000000;
+        defaultColors[key_actionBarDefaultTitle] = 0xff527da3;
+        defaultColors[key_actionBarDefaultSubtitle] = 0xffe6b800;
         defaultColors[key_actionBarDefaultSelector] = 0xff406d94;
         defaultColors[key_actionBarWhiteSelector] = 0x1d000000;
-        defaultColors[key_actionBarDefaultSearch] = 0xffffffff;
+        defaultColors[key_actionBarDefaultSearch] = 0xff527da3;
         defaultColors[key_actionBarDefaultSearchPlaceholder] = 0x88ffffff;
         defaultColors[key_actionBarDefaultSubmenuItem] = 0xff222222;
         defaultColors[key_actionBarDefaultSubmenuItemIcon] = 0xff676b70;
@@ -218,7 +218,7 @@ public class ThemeColors {
         defaultColors[key_actionBarDefaultArchivedSearchPlaceholder] = 0x88ffffff;
 
         defaultColors[key_chats_onlineCircle] = 0xff4bcb1c;
-        defaultColors[key_chats_unreadCounter] = 0xff4ecc5e;
+        defaultColors[key_chats_unreadCounter] = 0xff25d366;
         defaultColors[key_chats_unreadCounterMuted] = 0xffc6c9cc;
         defaultColors[key_chats_unreadCounterText] = 0xffffffff;
         defaultColors[key_chats_archiveBackground] = 0xff66a9e0;
@@ -262,7 +262,7 @@ public class ThemeColors {
         defaultColors[key_chats_actionIcon] = 0xffffffff;
         defaultColors[key_chats_actionBackground] = 0xff65a9e0;
         defaultColors[key_chats_actionPressedBackground] = 0xff569dd6;
-        defaultColors[key_chats_menuTopBackgroundCats] = 0xff598fba;
+        defaultColors[key_chats_menuTopBackgroundCats] = 0xffffc107;
         defaultColors[key_chats_archivePullDownBackground] = 0xffc6c9cc;
         defaultColors[key_chats_archivePullDownBackgroundActive] = 0xff66a9e0;
 
