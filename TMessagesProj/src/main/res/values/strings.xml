@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="AppName">YATGram</string>
-    <string name="AppNameBeta">YATGram</string>
+    <string name="AppName">CHATGram</string>
+    <string name="AppNameBeta">CHATGram</string>
     <string name="LanguageName">English</string>
     <string name="English">English</string>
     <string name="LanguageNameInEnglish">English</string>
