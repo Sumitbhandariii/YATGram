@@ -902,12 +902,12 @@ public class ThemeColors {
         colorKeysMap.put(key_windowBackgroundWhiteGrayText6, "windowBackgroundWhiteGrayText6");
         colorKeysMap.put(key_windowBackgroundWhiteGrayText7, "windowBackgroundWhiteGrayText7");
         colorKeysMap.put(key_windowBackgroundWhiteGrayText8, "windowBackgroundWhiteGrayText8");
-        colorKeysMap.put(key_windowBackgroundWhiteBlackText, 0xff25d366);
+        colorKeysMap.put(key_windowBackgroundWhiteBlackText, "windowBackgroundWhiteBlackText");
         colorKeysMap.put(key_windowBackgroundWhiteHintText, "windowBackgroundWhiteHintText");
         colorKeysMap.put(key_windowBackgroundWhiteValueText, "windowBackgroundWhiteValueText");
         colorKeysMap.put(key_windowBackgroundWhiteLinkText, "windowBackgroundWhiteLinkText");
         colorKeysMap.put(key_windowBackgroundWhiteLinkSelection, "windowBackgroundWhiteLinkSelection");
-        colorKeysMap.put(key_windowBackgroundWhiteBlueHeader, 0xff25d366);
+        colorKeysMap.put(key_windowBackgroundWhiteBlueHeader, "windowBackgroundWhiteBlueHeader");
         colorKeysMap.put(key_switchTrack, "switchTrack");
         colorKeysMap.put(key_switchTrackChecked, "switchTrackChecked");
         colorKeysMap.put(key_switchTrackBlue, "switchTrackBlue");
