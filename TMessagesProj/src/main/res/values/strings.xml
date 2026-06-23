@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="AppName">CHATGram</string>
-    <string name="AppNameBeta">CHATGram</string>
+    <string name="AppName">Novagram</string>
+    <string name="AppNameBeta">Novagram</string>
     <string name="LanguageName">English</string>
     <string name="English">English</string>
     <string name="LanguageNameInEnglish">English</string>
